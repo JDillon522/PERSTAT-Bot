@@ -1,0 +1,24 @@
+{
+  "name": "perstat-bot",
+  "version": "1.0.0",
+  "description": "A daily PERSTAT bot for Slack",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JDillon522/PERSTAT-Bot.git"
+  },
+  "keywords": [
+    "bot",
+    "slack",
+    "perstat"
+  ],
+  "author": "Joseph Dillon",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JDillon522/PERSTAT-Bot/issues"
+  },
+  "homepage": "https://github.com/JDillon522/PERSTAT-Bot#readme"
+}
