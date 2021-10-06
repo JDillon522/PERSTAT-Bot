@@ -3,8 +3,8 @@ const schedule = require('node-schedule');
 
 sendReport = (app, users) => {
     const rule = new schedule.RecurrenceRule();
-    rule.minute = 55;
-    rule.hour = 12;
+    rule.minute = 5;
+    rule.hour = 17;
     rule.dayOfWeek = [new schedule.Range(1, 5)];
 
     const job = schedule.scheduleJob(rule, () => {

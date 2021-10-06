@@ -3,7 +3,7 @@ require('dotenv').config();
 
 const { App } = require('@slack/bolt');
 const { sendPerstat, sendReminder } = require('./sendPerstat.js');
-const { getUsers, registerClickEvents } = require('./events.js');
+const { registerClickEvents } = require('./events.js');
 const { sendReport } = require('./report.js');
 
 
