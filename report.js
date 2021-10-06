@@ -27,7 +27,7 @@ sendReport = (app) => {
 
         const header = `------- 186 CPT - PERSTAT Rollup for ${new Date().toLocaleString("en-US")} -------`;
         app.client.chat.postMessage({
-            channel: 'C02GPM56D8D', // TODO: fix hardcoding
+            channel: process.env.PERSTAT_CHANNEL_ID,
             blocks: [
                 {
                     type: "header",
