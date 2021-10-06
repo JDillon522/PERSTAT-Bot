@@ -23,6 +23,10 @@ PERSTAT_CHANNEL_ID
 - ~~Deployment pipeline~~
 - Testing
 - Convert to typescript
+- Add "notes" field
+- Format the report data better
+- Disable submission inputs and button on submission
+- Handle late submissions
 
 
 ### Advanced TODOs
