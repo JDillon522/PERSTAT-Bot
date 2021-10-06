@@ -37,20 +37,6 @@ sendReport = (app, users) => {
                     type: "header",
                     text: {
                         type: "plain_text",
-                        text: `- Present`
-                    }
-                },
-                {
-                    type: "section",
-                    text: {
-                        type: "mrkdwn",
-                        text: presentReport.length ? presentReport : "- N/A"
-                    }
-                },
-                {
-                    type: "header",
-                    text: {
-                        type: "plain_text",
                         text: `- Unaccounted For`
                     }
                 },
@@ -59,6 +45,20 @@ sendReport = (app, users) => {
                     text: {
                         type: "mrkdwn",
                         text: unaccountedForReport.length ? unaccountedForReport : "- N/A"
+                    }
+                },
+                {
+                    type: "header",
+                    text: {
+                        type: "plain_text",
+                        text: `- Present`
+                    }
+                },
+                {
+                    type: "section",
+                    text: {
+                        type: "mrkdwn",
+                        text: presentReport.length ? presentReport : "- N/A"
                     }
                 },
                 {
