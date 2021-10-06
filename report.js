@@ -6,6 +6,8 @@ sendReport = (app, users) => {
     rule.minute = [5, 20, 35, 50];
 
     const job = schedule.scheduleJob(rule, () => {
+        console.log('Submitting PERSTAT Report');
+
         let presentReport = '';
         let unaccountedForReport = '';
 

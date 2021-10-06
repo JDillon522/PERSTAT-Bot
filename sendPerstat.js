@@ -6,7 +6,11 @@ sendPerstat = (app, users) => {
     rule.minute = [0, 15, 30, 45];
 
     const job = schedule.scheduleJob(rule, () => {
+        console.log('---- Starting PERSTAT Solicitation ----');
+
         users.forEach(user => {
+            console.log(`Pinging: ${user.profile.display_name} / ${user.id}`);
+
             app.client.chat.postMessage({
                 channel: user.id,
                 blocks: [
