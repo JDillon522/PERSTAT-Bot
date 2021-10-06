@@ -3,10 +3,12 @@
 This simple bot sends a daily PERSAT message to users and prompts them to check in. At a later scheduled time it then collects the responses and rolls them up into a report.
 
 ## TODO
-- Accurate scheduling
+- ~~Accurate scheduling~~
 - Error handling / logging
-- Deployment pipeline
+- ~~Deployment pipeline~~
 - Testing
+- Convert to typescript
+
 
 ### Advanced TODOs
 - Admin controls
@@ -19,4 +21,3 @@ This simple bot sends a daily PERSAT message to users and prompts them to check 
     - Simple math problems to submit
     - Giffs and memes
 - Send report to external file like a google doc
-- Convert to typescript

@@ -63,7 +63,7 @@ sendReport = (app, users) => {
                     type: "divider"
                 },
             ],
-            text: 'Time to submit your PERSTAT status'
+            text: 'PERSTAT Rollup Available!'
         });
     });
 };
