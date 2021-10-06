@@ -14,7 +14,9 @@ This simple bot sends a daily PERSAT message to users and prompts them to check 
     - Add | Edit a user's settings
     - Trigger a new report (for late responses)
     - Trigger a new solicitation of status
+    - Adjust solicitation and report times
 - Multiple solicitation formats
     - Simple math problems to submit
     - Giffs and memes
 - Send report to external file like a google doc
+- Convert to typescript

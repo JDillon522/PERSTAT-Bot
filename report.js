@@ -1,5 +1,11 @@
+const schedule = require('node-schedule');
+
+
 sendReport = (app, users) => {
-    setTimeout(() => {
+    const rule = new schedule.RecurrenceRule();
+    rule.minute = [5, 20, 35, 50];
+
+    const job = schedule.scheduleJob(rule, () => {
         let presentReport = '';
         let unaccountedForReport = '';
 
@@ -57,7 +63,7 @@ sendReport = (app, users) => {
             ],
             text: 'Time to submit your PERSTAT status'
         });
-    }, 1000 * 30 * 1);
+    });
 };
 
 

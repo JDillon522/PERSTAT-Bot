@@ -1,7 +1,11 @@
+const schedule = require('node-schedule');
+
 
 sendPerstat = (app, users) => {
+    const rule = new schedule.RecurrenceRule();
+    rule.minute = [0, 15, 30, 45];
 
-    setTimeout(() => {
+    const job = schedule.scheduleJob(rule, () => {
         users.forEach(user => {
             app.client.chat.postMessage({
                 channel: user.id,
@@ -40,8 +44,7 @@ sendPerstat = (app, users) => {
                 text: 'Time to submit your PERSTAT status'
             });
         });
-    }, 5000);
-
+    });
 };
 
 
