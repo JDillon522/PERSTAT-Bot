@@ -33,6 +33,7 @@ const app = new App({
     - Solicitation: ${getBaseHour()}:${getBaseMin()}\n
     - Reminder: ${getBaseHour()}:${getBaseMin() + getReminderMinDelay()}\n
     - Report: ${getReportHour()}:${getReportMin()}`);
+    console.log('UTC Difference is +4 hours');
     console.log('=====================================================================');
 })();
 
