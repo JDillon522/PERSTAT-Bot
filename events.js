@@ -1,6 +1,6 @@
 getUsers = async (app) => {
     console.log('Refreshing list of users');
-    const users = await app.client.users.list();
+    let users = await app.client.users.list();
     users = users.members.filter(user => !user.is_bot && user.name != 'slackbot');
 
     return users;
