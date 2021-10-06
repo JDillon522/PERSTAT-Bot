@@ -9,7 +9,7 @@ sendPerstat = (app, users) => {
         console.log('---- Starting PERSTAT Solicitation ----');
 
         users.forEach(user => {
-            console.log(`Pinging: ${user.profile.display_name} / ${user.id}`);
+            console.log(`Pinging: ${user.name} / ${user.id}`);
 
             app.client.chat.postMessage({
                 channel: user.id,

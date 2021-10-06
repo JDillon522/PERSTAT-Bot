@@ -11,7 +11,7 @@ registerClickEvents = (app, users) => {
         const userIndex = users.findIndex(user => user.id === body.user.id);
         users[userIndex].responded = true;
 
-        console.log(`Ping Successful: ${body.user.profile.display_name} / ${body.user.id}`);
+        console.log(`Ping Successful: ${body.user.name} / ${body.user.id}`);
     });
 }
 
