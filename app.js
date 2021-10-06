@@ -5,7 +5,7 @@ const { App } = require('@slack/bolt');
 const { sendPerstat, sendReminder } = require('./sendPerstat.js');
 const { registerClickEvents } = require('./events.js');
 const { sendReport } = require('./report.js');
-const { getBaseHour, getBaseMinute, getReportHour, getReportMin } = require('./utils.js');
+const { getBaseHour, getBaseMin, getReportHour, getReportMin } = require('./utils.js');
 
 
 const app = new App({
@@ -30,8 +30,8 @@ const app = new App({
     console.log(`PERSTAT BOT is Alive as of ${new Date()}`);
     console.log(`Running in mode: ${process.env.PRODUCTION ? 'PRODUCTION' : 'DEV'}`)
     console.log(`\nBOT will execute at the following times:\n
-    - Solicitation: ${getBaseHour()}:${getBaseMinute()}\n
-    - Reminder: ${getBaseHour()}:${getBaseMinute() + getReminderDelay()}\n
+    - Solicitation: ${getBaseHour()}:${getBaseMin()}\n
+    - Reminder: ${getBaseHour()}:${getBaseMin() + getReminderMinDelay()}\n
     - Report: ${getReportHour()}:${getReportMin()}`);
     console.log('=====================================================================');
 })();

@@ -1,10 +1,10 @@
 const schedule = require('node-schedule');
 const { getUsers } = require('./users');
-const { getBaseHour, getBaseMinute, getReminderDelay } = require('./utils');
+const { getBaseHour, getBaseMin, getReminderMinDelay } = require('./utils');
 
 sendPerstat = async (app) => {
     const rule = new schedule.RecurrenceRule();
-    rule.minute = getBaseMinute();
+    rule.minute = getBaseMin();
     rule.hour = getBaseHour();
     rule.dayOfWeek = [new schedule.Range(1, 5)];
 
@@ -58,7 +58,7 @@ sendPerstat = async (app) => {
 
 sendReminder = (app) => {
     const rule = new schedule.RecurrenceRule();
-    rule.minute = getBaseMinute() + getReminderDelay();
+    rule.minute = getBaseMin() + getReminderMinDelay();
     rule.hour = getBaseHour();
     rule.dayOfWeek = [new schedule.Range(1, 5)];
 

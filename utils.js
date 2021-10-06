@@ -8,17 +8,17 @@ getBaseHour = () => {
     }
 }
 
-getBaseMinute = () => {
+getBaseMin = () => {
     if (process.env.PRODUCTION) {
-        return parseInt(process.env.BASE_MIN, 10) + UTC_HOUR_DIFF;
+        return parseInt(process.env.BASE_MIN, 10);
     } else {
         return parseInt(process.env.BASE_MIN, 10);
     }
 }
 
-getReminderDelay = () => {
+getReminderMinDelay = () => {
     if (process.env.PRODUCTION) {
-        return parseInt(process.env.BASE_REMINDER_DELAY, 10) + UTC_HOUR_DIFF;
+        return parseInt(process.env.BASE_REMINDER_DELAY, 10);
     } else {
         return parseInt(process.env.BASE_REMINDER_DELAY, 10);
     }
@@ -34,7 +34,7 @@ getReportHour = () => {
 
 getReportMin = () => {
     if (process.env.PRODUCTION) {
-        return parseInt(process.env.REPORT_MIN, 10) + UTC_HOUR_DIFF;
+        return parseInt(process.env.REPORT_MIN, 10);
     } else {
         return parseInt(process.env.REPORT_MIN, 10);
     }
@@ -42,8 +42,8 @@ getReportMin = () => {
 
 module.exports = {
     getBaseHour,
-    getBaseMinute,
-    getReminderDelay,
+    getBaseMin,
+    getReminderMinDelay,
     getReportHour,
     getReportMin
 }
