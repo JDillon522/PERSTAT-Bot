@@ -4,11 +4,8 @@ sendPerstat = (app, users) => {
     setTimeout(() => {
         users.forEach(user => {
             app.client.chat.postMessage({
-                channel: user,
+                channel: user.id,
                 blocks: [
-                    {
-                        type: "divider"
-                    },
                     {
                         type: "header",
                         text: {
@@ -43,7 +40,7 @@ sendPerstat = (app, users) => {
                 text: 'Time to submit your PERSTAT status'
             });
         });
-    }, 30000);
+    }, 5000);
 
 };
 

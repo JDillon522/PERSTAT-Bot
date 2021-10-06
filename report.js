@@ -1,20 +1,26 @@
-sendReport = (app, responses) => {
+sendReport = (app, users) => {
     setTimeout(() => {
-        let report = '';
+        let presentReport = '';
+        let unaccountedForReport = '';
 
-        responses.forEach(res => {
-            report += `- <@${res}>\n`;
+        users.forEach(user => {
+            if (user.responded) {
+                presentReport += `- <@${user.id}>\n`;
+            } else {
+                unaccountedForReport += `- <@${user.id}>\n`;
+            }
+
         });
 
-
+        const header = `------- 186 CPT - PERSTAT Rollup for ${new Date().toLocaleString("en-US")} -------`;
         app.client.chat.postMessage({
-            channel: 'C02GPM56D8D',
+            channel: 'C02GPM56D8D', // TODO: fix hardcoding
             blocks: [
                 {
                     type: "header",
                     text: {
                         type: "plain_text",
-                        text: `------- 186 CPT - PERSTAT Rollup for ${new Date().toLocaleString("en-US")} -------`
+                        text: header
                     }
                 },
                 {
@@ -28,7 +34,7 @@ sendReport = (app, responses) => {
                     type: "section",
                     text: {
                         type: "mrkdwn",
-                        text: report
+                        text: presentReport.length ? presentReport : "- N/A"
                     }
                 },
                 {
@@ -42,7 +48,7 @@ sendReport = (app, responses) => {
                     type: "section",
                     text: {
                         type: "mrkdwn",
-                        text: "- TBD"
+                        text: unaccountedForReport.length ? unaccountedForReport : "- N/A"
                     }
                 },
                 {

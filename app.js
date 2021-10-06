@@ -3,7 +3,7 @@ require('dotenv').config();
 
 const { App } = require('@slack/bolt');
 const { sendPerstat } = require('./sendPerstat.js');
-const { registerClickEvents } = require('./events.js');
+const { getUsers, registerClickEvents } = require('./events.js');
 const { sendReport } = require('./report.js');
 
 
@@ -14,15 +14,18 @@ const app = new App({
     appToken: process.env.SLACK_PERSTAT_BOT_SOCKET_TOKEN
 });
 
-// collect available users
-const users = require('./users.json');
-const responses = [];
 
-registerClickEvents(app, responses);
-sendPerstat(app, users);
-sendReport(app, responses);
 
 (async () => {
+
+    // collect available users
+    let users = await getUsers(app)
+    users = users.members.filter(user => !user.is_bot && user.name != 'slackbot');
+
+    registerClickEvents(app, users);
+    sendPerstat(app, users);
+    sendReport(app, users);
+
     await app.start(process.env.PORT || 3000);
 
     console.log('PERSTAT BOT is Alive!');
