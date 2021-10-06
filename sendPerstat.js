@@ -3,7 +3,7 @@ const schedule = require('node-schedule');
 
 sendPerstat = (app, users) => {
     const rule = new schedule.RecurrenceRule();
-    rule.minute = [35];
+    rule.minute = 50;
     rule.hour = 12;
     // rule.dayOfWeek = [new schedule.Range(1, 5)];
 
@@ -56,7 +56,7 @@ sendPerstat = (app, users) => {
 
 sendReminder = (app, users) => {
     const rule = new schedule.RecurrenceRule();
-    rule.minute = [37];
+    rule.minute = 53;
     rule.hour = 12;
     // rule.dayOfWeek = [new schedule.Range(1, 5)];
 

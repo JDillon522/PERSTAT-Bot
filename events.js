@@ -1,4 +1,5 @@
 getUsers = async (app) => {
+    console.log('Getting all users');
     return await app.client.users.list();
 }
 
