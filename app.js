@@ -2,7 +2,7 @@
 require('dotenv').config();
 
 const { App } = require('@slack/bolt');
-const { sendPerstat } = require('./sendPerstat.js');
+const { sendPerstat, sendReminder } = require('./sendPerstat.js');
 const { getUsers, registerClickEvents } = require('./events.js');
 const { sendReport } = require('./report.js');
 
@@ -24,6 +24,7 @@ const app = new App({
 
     registerClickEvents(app, users);
     sendPerstat(app, users);
+    sendReminder(app, users);
     sendReport(app, users);
 
     await app.start(process.env.PORT || 3000);

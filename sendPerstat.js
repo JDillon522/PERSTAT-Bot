@@ -112,5 +112,6 @@ sendReminder = (app, users) => {
 
 
 module.exports = {
-    sendPerstat: sendPerstat
+    sendPerstat: sendPerstat,
+    sendReminder: sendReminder
 };
