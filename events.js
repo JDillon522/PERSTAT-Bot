@@ -1,6 +1,9 @@
 getUsers = async (app) => {
-    console.log('Getting all users');
-    return await app.client.users.list();
+    console.log('Refreshing list of users');
+    const users = await app.client.users.list();
+    users = users.members.filter(user => !user.is_bot && user.name != 'slackbot');
+
+    return users;
 }
 
 registerClickEvents = (app, users) => {

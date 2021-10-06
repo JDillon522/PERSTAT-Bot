@@ -18,9 +18,7 @@ const app = new App({
 
 (async () => {
 
-    // collect available users
-    let users = await getUsers(app)
-    users = users.members.filter(user => !user.is_bot && user.name != 'slackbot');
+    let users = [];
 
     registerClickEvents(app, users);
     sendPerstat(app, users);

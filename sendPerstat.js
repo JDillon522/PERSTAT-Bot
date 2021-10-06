@@ -1,7 +1,9 @@
 const schedule = require('node-schedule');
+const { getUsers } = require('./events');
 
+sendPerstat = async (app, users) => {
+    users = await getUsers(app);
 
-sendPerstat = (app, users) => {
     const rule = new schedule.RecurrenceRule();
     rule.minute = 50;
     rule.hour = 12;
