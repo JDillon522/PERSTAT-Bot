@@ -1,39 +1,54 @@
-const { ToadScheduler, SimpleIntervalJob, Task } = require('toad-scheduler');
 
-sendPerstat = (app) => {
-    const channel = 'U06TTRZ97';
+sendPerstat = (app, users) => {
 
-    const scheduler = new ToadScheduler();
-    const task = new Task('Send PERSTAT Request', () => {
-        app.client.chat.postMessage({
-            channel: channel,
-            blocks: [
-                {
-                    type: "section",
-                    text: {
-                        type: "mrkdwn",
-                        text: `Hey guy, wake up! <@${channel}>`
+    setTimeout(() => {
+        users.forEach(user => {
+            app.client.chat.postMessage({
+                channel: user,
+                blocks: [
+                    {
+                        type: "divider"
                     },
-                    accessory: {
-                        type: 'button',
+                    {
+                        type: "header",
                         text: {
-                            type: 'plain_text',
-                            text: 'Submit'
-                        },
-                        action_id: 'button_click'
-                    }
-                }
-            ],
-            text: 'Time to submit your PERSTAT status'
+                            type: "plain_text",
+                            text: "------- 186 CPT - PERSTAT -------"
+                        }
+                    },
+                    {
+                        type: "section",
+                        text: {
+                            type: "mrkdwn",
+                            text: "Good Morning!\n\nIts Time to submit your PERSTAT status"
+                        }
+                    },
+                    {
+                        type: "actions",
+                        elements: [
+                            {
+                                type: "button",
+                                text: {
+                                    type: "plain_text",
+                                    text: "I'm UP!"
+                                },
+                                action_id: "send_perstat"
+                            }
+                        ]
+                    },
+                    {
+                        type: "divider"
+                    },
+                ],
+                text: 'Time to submit your PERSTAT status'
+            });
         });
-    });
-
-    const job = new SimpleIntervalJob({ seconds: 10 }, task);
-
-    scheduler.addSimpleIntervalJob(job);
-
-
+    }, 30000);
 
 };
 
-module.exports = sendPerstat;
+
+
+module.exports = {
+    sendPerstat: sendPerstat
+};

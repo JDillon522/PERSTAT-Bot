@@ -2,7 +2,9 @@
 require('dotenv').config();
 
 const { App } = require('@slack/bolt');
-const sendPerstat = require('./sendPerstat.js');
+const { sendPerstat } = require('./sendPerstat.js');
+const { registerClickEvents } = require('./events.js');
+const { sendReport } = require('./report.js');
 
 
 const app = new App({
@@ -12,38 +14,13 @@ const app = new App({
     appToken: process.env.SLACK_PERSTAT_BOT_SOCKET_TOKEN
 });
 
+// collect available users
+const users = require('./users.json');
+const responses = [];
 
-app.message('hello', async ({message, say}) => {
-    await say({
-        blocks: [
-            {
-                type: "section",
-                text: {
-                    type: "mrkdwn",
-                    text: `Hey guy, wake up! <@${message.user}>`
-                },
-                accessory: {
-                    type: 'button',
-                    text: {
-                        type: 'plain_text',
-                        text: 'Submit'
-                    },
-                    action_id: 'button_click'
-                }
-            }
-        ],
-        text: `I guess I'm redundant <@${message.user}>`
-    });
-});
-
-app.action('button_click', async ({ body, ack, say}) => {
-    await ack();
-
-    await say(`<@${body.user.id}> is awake`);
-});
-
-
-sendPerstat(app);
+registerClickEvents(app, responses);
+sendPerstat(app, users);
+sendReport(app, responses);
 
 (async () => {
     await app.start(process.env.PORT || 3000);
