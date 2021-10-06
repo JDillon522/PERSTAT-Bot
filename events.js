@@ -13,7 +13,10 @@ registerClickEvents = (app, users) => {
         await say(`I'm glad to hear it <@${body.user.id}>.\n\nNow go forth and do great things.\n\n"I give a shit about you" - SFC Boyce`);
 
         const userIndex = users.findIndex(user => user.id === body.user.id);
-        users[userIndex].responded = true;
+
+        if (userIndex > 0) {
+            users[userIndex].responded = true;
+        }
 
         console.log(`Ping Successful: ${body.user.name} / ${body.user.id}`);
     });

@@ -27,7 +27,7 @@ const app = new App({
 
     await app.start(process.env.PORT || 3000);
 
-    console.log('PERSTAT BOT is Alive!');
+    console.log(`PERSTAT BOT is Alive as of ${new Date()}`);
 
 })();
 
