@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "A daily PERSTAT bot for Slack",
   "main": "app.js",
+  "engines": {
+    "node": "14.x"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js"
@@ -22,7 +25,7 @@
     "url": "https://github.com/JDillon522/PERSTAT-Bot/issues"
   },
   "homepage": "https://github.com/JDillon522/PERSTAT-Bot#readme",
-  "devDependencies": {
+  "dependencies": {
     "@slack/bolt": "^3.7.0",
     "dotenv": "^10.0.0",
     "node-schedule": "^2.0.0"
