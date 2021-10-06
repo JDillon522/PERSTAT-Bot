@@ -3,16 +3,18 @@
 This simple bot sends a daily PERSAT message to users and prompts them to check in. At a later scheduled time it then collects the responses and rolls them up into a report.
 
 ## Required Configuration Variables
+
+Create a `.env` file at the root of the project on your local machine and fill in the relevant variables.
 ```
 SLACK_SIGNING_SECRET
 SLACK_BOT_TOKEN
 SLACK_PERSTAT_BOT_SOCKET_TOKEN
 
-DEV_BASE_HOUR
-DEV_BASE_MIN
-DEV_BASE_REMINDER_DELAY
-DEV_REPORT_HOUR
-DEV_REPORT_MIN
+BASE_HOUR
+BASE_MIN
+BASE_REMINDER_DELAY
+REPORT_HOUR
+REPORT_MIN
 
 PERSTAT_CHANNEL_ID
 ```
