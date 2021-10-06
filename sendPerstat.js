@@ -5,7 +5,7 @@ sendPerstat = async (app, users) => {
     users = await getUsers(app);
 
     const rule = new schedule.RecurrenceRule();
-    // rule.minute = 50;
+    rule.minute = 5;
     rule.hour = 17;
     // rule.dayOfWeek = [new schedule.Range(1, 5)];
 
@@ -58,7 +58,7 @@ sendPerstat = async (app, users) => {
 
 sendReminder = (app, users) => {
     const rule = new schedule.RecurrenceRule();
-    rule.minute = 3;
+    rule.minute = 7;
     rule.hour = 17;
     // rule.dayOfWeek = [new schedule.Range(1, 5)];
 
