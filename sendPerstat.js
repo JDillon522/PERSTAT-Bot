@@ -3,7 +3,9 @@ const schedule = require('node-schedule');
 
 sendPerstat = (app, users) => {
     const rule = new schedule.RecurrenceRule();
-    rule.minute = [45];
+    rule.minute = [30];
+    rule.hour = 12;
+    rule.dayOfWeek = [new schedule.Range(1, 5)];
 
     const job = schedule.scheduleJob(rule, () => {
         console.log('---- Starting PERSTAT Solicitation ----');
