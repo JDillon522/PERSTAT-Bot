@@ -1,13 +1,16 @@
 const schedule = require('node-schedule');
+const { getReportHour, getReportMin } = require('./utils');
+const { getUsers } = require('./users');
 
-
-sendReport = (app, users) => {
+sendReport = (app) => {
     const rule = new schedule.RecurrenceRule();
-    rule.minute = 10;
-    rule.hour = 17;
+    rule.minute = getReportMin();
+    rule.hour = getReportHour();
     rule.dayOfWeek = [new schedule.Range(1, 5)];
 
-    const job = schedule.scheduleJob(rule, () => {
+    const job = schedule.scheduleJob(rule, async () => {
+        const users = await getUsers(app);
+
         console.log('Submitting PERSTAT Report');
 
         let presentReport = '';
@@ -15,7 +18,7 @@ sendReport = (app, users) => {
 
         users.forEach(user => {
             if (user.responded) {
-                presentReport += `- <@${user.id}>\n`;
+                presentReport += `- <@${user.id}> at ${user.responseTime}\n`;
             } else {
                 unaccountedForReport += `- <@${user.id}>\n`;
             }
@@ -72,6 +75,6 @@ sendReport = (app, users) => {
 
 
 module.exports = {
-    sendReport: sendReport
+    sendReport
 };
 

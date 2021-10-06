@@ -1,16 +1,16 @@
 const schedule = require('node-schedule');
-const { getUsers } = require('./events');
+const { getUsers } = require('./users');
+const { getBaseHour, getBaseMinute, getReminderDelay } = require('./utils');
 
-sendPerstat = async (app, users) => {
-    users = await getUsers(app);
-
+sendPerstat = async (app) => {
     const rule = new schedule.RecurrenceRule();
-    rule.minute = 5;
-    rule.hour = 17;
-    // rule.dayOfWeek = [new schedule.Range(1, 5)];
+    rule.minute = getBaseMinute();
+    rule.hour = getBaseHour();
+    rule.dayOfWeek = [new schedule.Range(1, 5)];
 
-    const job = schedule.scheduleJob(rule, () => {
-        console.log('---- Starting PERSTAT Solicitation ----');
+    const job = await schedule.scheduleJob(rule, async () => {
+        console.log('---- Sending PERSTAT Solicitation ----');
+        const users = await getUsers(app);
 
         users.forEach(user => {
             console.log(`Pinging: ${user.name} / ${user.id}`);
@@ -56,14 +56,15 @@ sendPerstat = async (app, users) => {
 };
 
 
-sendReminder = (app, users) => {
+sendReminder = (app) => {
     const rule = new schedule.RecurrenceRule();
-    rule.minute = 7;
-    rule.hour = 17;
-    // rule.dayOfWeek = [new schedule.Range(1, 5)];
+    rule.minute = getBaseMinute() + getReminderDelay();
+    rule.hour = getBaseHour();
+    rule.dayOfWeek = [new schedule.Range(1, 5)];
 
-    const job = schedule.scheduleJob(rule, () => {
-        console.log('---- Starting PERSTAT Solicitation ----');
+    const job = schedule.scheduleJob(rule, async () => {
+        console.log('---- Sending PERSTAT REMINDERS ----');
+        const users = await getUsers(app);
 
         users.forEach(user => {
             if (!user.responded) {
@@ -96,7 +97,7 @@ sendReminder = (app, users) => {
                                         type: "plain_text",
                                         text: "I'm UP!"
                                     },
-                                    action_id: "send_perstat"
+                                    action_id: "send_perstat_final"
                                 }
                             ]
                         },
@@ -114,6 +115,6 @@ sendReminder = (app, users) => {
 
 
 module.exports = {
-    sendPerstat: sendPerstat,
-    sendReminder: sendReminder
+    sendPerstat,
+    sendReminder
 };

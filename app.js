@@ -18,16 +18,15 @@ const app = new App({
 
 (async () => {
 
-    let users = [];
-
-    registerClickEvents(app, users);
-    sendPerstat(app, users);
-    sendReminder(app, users);
-    sendReport(app, users);
+    registerClickEvents(app);
+    sendPerstat(app);
+    sendReminder(app);
+    sendReport(app);
 
     await app.start(process.env.PORT || 3000);
 
     console.log(`PERSTAT BOT is Alive as of ${new Date()}`);
+    console.log(`Running in mode: ${process.env.PRODUCTION || 'DEV'}`)
 
 })();
 

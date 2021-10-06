@@ -4,7 +4,7 @@ This simple bot sends a daily PERSAT message to users and prompts them to check 
 
 ## TODO
 - ~~Accurate scheduling~~
-- Error handling / logging
+- Error handling / ~~logging~~
 - ~~Deployment pipeline~~
 - Testing
 - Convert to typescript
