@@ -29,6 +29,10 @@ PERSTAT_CHANNEL_ID
 - Format the report data better
 - Disable submission inputs and button on submission
 - Handle late submissions
+- Reset user state in the morning
+- Simplify reminder time logic (create its own env var)
+- remove user id from logs. You cant search by it anyway
+- filter out inactive users (campbell)
 
 
 ### Advanced TODOs

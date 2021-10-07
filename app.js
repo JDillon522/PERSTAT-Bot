@@ -2,10 +2,10 @@
 require('dotenv').config();
 
 const { App } = require('@slack/bolt');
-const { sendPerstat, sendReminder } = require('./sendPerstat.js');
-const { registerClickEvents } = require('./events.js');
-const { sendReport } = require('./report.js');
-const { getBaseHour, getBaseMin, getReportHour, getReportMin } = require('./utils.js');
+const { sendPerstat, sendReminder } = require('./lib/sendPerstat.js');
+const { registerClickEvents } = require('./lib/events.js');
+const { sendReport } = require('./lib/report.js');
+const { getBaseHour, getBaseMin, getReportHour, getReportMin } = require('./lib/utils.js');
 
 
 const app = new App({
