@@ -5,7 +5,7 @@ const { App } = require('@slack/bolt');
 const { sendPerstat, sendReminder } = require('./lib/sendPerstat.js');
 const { registerClickEvents } = require('./lib/events.js');
 const { sendReport } = require('./lib/report.js');
-const { getInitialHour, getInitialMin, getReportHour, getReportMin, getReminderMin, getReminderHour, TIME_FORMAT_OPTS } = require('./lib/utils.js');
+const { getInitialHour, getInitialMin, getReportHour, getReportMin, getReminderMin, getReminderHour, TIME_FORMAT_OPTS, printStartupOutput } = require('./lib/utils.js');
 const { setUpErrorHandling } = require('./lib/errors.js');
 const { getUsers } = require('./lib/users.js');
 
@@ -29,25 +29,6 @@ const app = new App({
 
     await app.start(process.env.PORT || 3000);
 
-    const sol = new Date();
-    const rem = new Date();
-    const rep = new Date();
-    sol.setHours(getInitialHour(), getInitialMin());
-    rem.setHours(getReminderHour(), getReminderMin());
-    rep.setHours(getReportHour(), getReportMin());
-
-    console.log('=====================================================================');
-    console.log(`PERSTAT BOT is Alive as of ${new Date().toLocaleString('en-US', TIME_FORMAT_OPTS)}`);
-    console.log(`Running in mode: ${process.env.ENVIRONMENT}`)
-    console.log(`\nBOT will execute at the following times:\n
-    - Solicitation: ${sol.toLocaleTimeString('en-US', {...TIME_FORMAT_OPTS, timeStyle: 'short' })}
-    - Reminder:     ${rem.toLocaleTimeString('en-US', {...TIME_FORMAT_OPTS, timeStyle: 'short' })}
-    - Report:       ${rep.toLocaleTimeString('en-US', {...TIME_FORMAT_OPTS, timeStyle: 'short' })}
-    `);
-
-    console.log(`Config Features:
-    - Disable Date Range: ${process.env.DISABLE_DAY_RANGE === 'true'}
-    `);
-    console.log('=====================================================================');
+    printStartupOutput();
 })();
 
