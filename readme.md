@@ -6,17 +6,19 @@ This simple bot sends a daily PERSAT message to users and prompts them to check 
 
 Create a `.env` file at the root of the project on your local machine and fill in the relevant variables.
 ```
-SLACK_SIGNING_SECRET
-SLACK_BOT_TOKEN
-SLACK_PERSTAT_BOT_SOCKET_TOKEN
+SLACK_SIGNING_SECRET="<string>"
+SLACK_BOT_TOKEN="<string>"
+SLACK_PERSTAT_BOT_SOCKET_TOKEN="<string>"
 
-BASE_HOUR
-BASE_MIN
-BASE_REMINDER_DELAY
-REPORT_HOUR
-REPORT_MIN
+INITIAL_HOUR=<int>
+INITIAL_MIN=<int>
+REMINDER_HOUR=<int>
+REMINDER_MIN=<int>
+REPORT_HOUR=<int>
+REPORT_MIN=<int>
 
-PERSTAT_CHANNEL_ID
+PERSTAT_CHANNEL_ID="<string>"
+ENVIRONMENT="<string>"
 ```
 
 ## TODO
