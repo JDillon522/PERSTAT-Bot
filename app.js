@@ -5,7 +5,9 @@ const { App } = require('@slack/bolt');
 const { sendPerstat, sendReminder } = require('./lib/sendPerstat.js');
 const { registerClickEvents } = require('./lib/events.js');
 const { sendReport } = require('./lib/report.js');
-const { getBaseHour, getBaseMin, getReportHour, getReportMin } = require('./lib/utils.js');
+const { getInitialHour, getInitialMin, getReportHour, getReportMin, getReminderMin, getReminderHour } = require('./lib/utils.js');
+const { setUpErrorHandling } = require('./lib/errors.js');
+const { getUsers } = require('./lib/users.js');
 
 
 const app = new App({
@@ -18,7 +20,8 @@ const app = new App({
 
 
 (async () => {
-
+    getUsers(app);
+    setUpErrorHandling(app);
     registerClickEvents(app);
     sendPerstat(app);
     sendReminder(app);
@@ -30,8 +33,8 @@ const app = new App({
     console.log(`PERSTAT BOT is Alive as of ${new Date()}`);
     console.log(`Running in mode: ${process.env.PRODUCTION ? 'PRODUCTION' : 'DEV'}`)
     console.log(`\nBOT will execute at the following times:\n
-    - Solicitation: ${getBaseHour()}:${getBaseMin()}\n
-    - Reminder: ${getBaseHour()}:${getBaseMin() + getReminderMinDelay()}\n
+    - Solicitation: ${getInitialHour()}:${getInitialMin()}\n
+    - Reminder: ${getReminderHour()}:${getReminderMin()}\n
     - Report: ${getReportHour()}:${getReportMin()}`);
     console.log('UTC Difference is +4 hours');
     console.log('=====================================================================');
