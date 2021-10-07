@@ -40,9 +40,9 @@ const app = new App({
     console.log(`PERSTAT BOT is Alive as of ${new Date().toLocaleString('en-US', {timeZone: 'EST', dateStyle: 'medium', timeStyle: 'medium'})}`);
     console.log(`Running in mode: ${process.env.PRODUCTION ? 'PRODUCTION' : 'DEV'}`)
     console.log(`\nBOT will execute at the following times:\n
-    - Solicitation: ${sol.toLocaleTimeString('en-US', { timeStyle: 'short' })}\n
-    - Reminder:     ${rem.toLocaleTimeString('en-US', { timeStyle: 'short' })}\n
-    - Report:       ${rep.toLocaleTimeString('en-US', { timeStyle: 'short' })}`);
+    - Solicitation: ${sol.toLocaleTimeString('en-US', { timeZone: 'EST', timeStyle: 'short' })}\n
+    - Reminder:     ${rem.toLocaleTimeString('en-US', { timeZone: 'EST', timeStyle: 'short' })}\n
+    - Report:       ${rep.toLocaleTimeString('en-US', { timeZone: 'EST', timeStyle: 'short' })}`);
     console.log('=====================================================================');
 })();
 
