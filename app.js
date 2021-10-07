@@ -37,13 +37,12 @@ const app = new App({
     rep.setHours(getReportHour(), getReportMin());
 
     console.log('=====================================================================');
-    console.log(`PERSTAT BOT is Alive as of ${new Date()}`);
+    console.log(`PERSTAT BOT is Alive as of ${new Date().toLocaleString('en-US', {timeZone: 'EST', dateStyle: 'medium', timeStyle: 'medium'})}`);
     console.log(`Running in mode: ${process.env.PRODUCTION ? 'PRODUCTION' : 'DEV'}`)
     console.log(`\nBOT will execute at the following times:\n
     - Solicitation: ${sol.toLocaleTimeString('en-US', { timeStyle: 'short' })}\n
     - Reminder:     ${rem.toLocaleTimeString('en-US', { timeStyle: 'short' })}\n
     - Report:       ${rep.toLocaleTimeString('en-US', { timeStyle: 'short' })}`);
-    console.log('UTC Difference is +4 hours');
     console.log('=====================================================================');
 })();
 
