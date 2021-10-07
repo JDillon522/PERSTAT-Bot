@@ -40,9 +40,14 @@ const app = new App({
     console.log(`PERSTAT BOT is Alive as of ${new Date().toLocaleString('en-US', TIME_FORMAT_OPTS)}`);
     console.log(`Running in mode: ${process.env.ENVIRONMENT}`)
     console.log(`\nBOT will execute at the following times:\n
-    - Solicitation: ${sol.toLocaleTimeString('en-US', TIME_FORMAT_OPTS)}\n
-    - Reminder:     ${rem.toLocaleTimeString('en-US', TIME_FORMAT_OPTS)}\n
-    - Report:       ${rep.toLocaleTimeString('en-US', TIME_FORMAT_OPTS)}`);
+    - Solicitation: ${sol.toLocaleTimeString('en-US', TIME_FORMAT_OPTS)}
+    - Reminder:     ${rem.toLocaleTimeString('en-US', TIME_FORMAT_OPTS)}
+    - Report:       ${rep.toLocaleTimeString('en-US', TIME_FORMAT_OPTS)}
+    `);
+
+    console.log(`Config Features:
+    - Disable Date Range: ${process.env.DISABLE_DAY_RANGE === 'true'}
+    `);
     console.log('=====================================================================');
 })();
 
