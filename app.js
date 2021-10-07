@@ -29,13 +29,20 @@ const app = new App({
 
     await app.start(process.env.PORT || 3000);
 
+    const sol = new Date();
+    const rem = new Date();
+    const rep = new Date();
+    sol.setHours(getInitialHour(), getInitialMin());
+    rem.setHours(getReminderHour(), getReminderMin());
+    rep.setHours(getReportHour(), getReportMin());
+
     console.log('=====================================================================');
     console.log(`PERSTAT BOT is Alive as of ${new Date()}`);
     console.log(`Running in mode: ${process.env.PRODUCTION ? 'PRODUCTION' : 'DEV'}`)
     console.log(`\nBOT will execute at the following times:\n
-    - Solicitation: ${getInitialHour()}:${getInitialMin()}\n
-    - Reminder: ${getReminderHour()}:${getReminderMin()}\n
-    - Report: ${getReportHour()}:${getReportMin()}`);
+    - Solicitation: ${sol.toLocaleTimeString('en-US', { timeStyle: 'short' })}\n
+    - Reminder:     ${rem.toLocaleTimeString('en-US', { timeStyle: 'short' })}\n
+    - Report:       ${rep.toLocaleTimeString('en-US', { timeStyle: 'short' })}`);
     console.log('UTC Difference is +4 hours');
     console.log('=====================================================================');
 })();
