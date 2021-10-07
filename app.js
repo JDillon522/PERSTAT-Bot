@@ -38,7 +38,7 @@ const app = new App({
 
     console.log('=====================================================================');
     console.log(`PERSTAT BOT is Alive as of ${new Date().toLocaleString('en-US', {timeZone: 'EST', dateStyle: 'medium', timeStyle: 'medium'})}`);
-    console.log(`Running in mode: ${process.env.PRODUCTION ? 'PRODUCTION' : 'DEV'}`)
+    console.log(`Running in mode: ${process.env.ENVIRONMENT}`)
     console.log(`\nBOT will execute at the following times:\n
     - Solicitation: ${sol.toLocaleTimeString('en-US', { timeZone: 'EST', timeStyle: 'short' })}\n
     - Reminder:     ${rem.toLocaleTimeString('en-US', { timeZone: 'EST', timeStyle: 'short' })}\n
