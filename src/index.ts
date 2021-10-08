@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import { App } from '@slack/bolt';
-import { registerClickEvents } from './lib/events';
+import { registerActions } from './lib/events';
 import { printStartupOutput } from './lib/utils';
 import { setUpErrorHandling } from './lib/errors';
 import { schedulePerstat, scheduleReminder, scheduleReport } from './lib/scheduler';
@@ -20,7 +20,7 @@ const app = new App({
 
 (async () => {
     setUpErrorHandling(app);
-    registerClickEvents(app);
+    registerActions(app);
     schedulePerstat(app);
     scheduleReminder(app);
     scheduleReport(app);

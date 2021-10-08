@@ -1,8 +1,8 @@
-import { App, SlackActionMiddlewareArgs } from '@slack/bolt';
+import { App, BlockAction, SlackActionMiddlewareArgs } from '@slack/bolt';
 import { markUserAsPresent, getUser } from './users';
 import { TIME_FORMAT_OPTS } from './utils';
 
-export const registerClickEvents = (app: App) => {
+export const registerActions = (app: App) => {
     app.action('send_perstat', async ({ body, ack, say}) => {
         await respondToButton({body, ack, say} as SlackActionMiddlewareArgs);
     });

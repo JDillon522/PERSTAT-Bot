@@ -1,11 +1,13 @@
 import { TIME_FORMAT_OPTS } from "./utils";
+const env = process.env.ENVIRONMENT !== 'PRODUCTION' ? process.env.ENVIRONMENT : '';
+const initialHeader = `------- 186 CPT - PERSTAT ------- ${env}`
 
 export const sendPerstatBlocks = [
     {
         type: "header",
         text: {
             type: "plain_text",
-            text: "------- 186 CPT - PERSTAT -------"
+            text: initialHeader
         }
     },
     {
@@ -33,12 +35,13 @@ export const sendPerstatBlocks = [
     },
 ];
 
+const reminderHeader = `------- 186 CPT - PERSTAT - FINAL REMINDER ------- ${env}`;
 export const sendReminderBlocks = [
     {
         type: "header",
         text: {
             type: "plain_text",
-            text: "------- 186 CPT - PERSTAT - FINAL REMINDER -------"
+            text: reminderHeader
         }
     },
     {
@@ -66,7 +69,7 @@ export const sendReminderBlocks = [
     },
 ];
 
-const rollupHeader = `------- 186 CPT - PERSTAT Rollup for ${new Date().toLocaleString("en-US", TIME_FORMAT_OPTS)} -------`;
+const rollupHeader = `------- 186 CPT - PERSTAT Rollup for ${new Date().toLocaleString("en-US", TIME_FORMAT_OPTS)} ------- ${env}`;
 export const reportBlocks = (unaccountedForReport, presentReport) => {
     return [
         {

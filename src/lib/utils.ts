@@ -44,8 +44,8 @@ export const printStartupOutput = () => {
     console.log('=====================================================================');
     console.log(`PERSTAT BOT is Alive as of ${new Date().toLocaleString('en-US', TIME_FORMAT_OPTS)}`);
     console.log(`Running in mode: ${process.env.ENVIRONMENT}`)
-    console.log(`\nBOT will execute at the following times:\n
-    - Solicitation: ${sol.toLocaleTimeString('en-US', {...TIME_FORMAT_OPTS, timeStyle: 'short' })}
+    console.log(`\nBOT will execute at the following times:
+    - Initial:      ${sol.toLocaleTimeString('en-US', {...TIME_FORMAT_OPTS, timeStyle: 'short' })}
     - Reminder:     ${rem.toLocaleTimeString('en-US', {...TIME_FORMAT_OPTS, timeStyle: 'short' })}
     - Report:       ${rep.toLocaleTimeString('en-US', {...TIME_FORMAT_OPTS, timeStyle: 'short' })}
     `);

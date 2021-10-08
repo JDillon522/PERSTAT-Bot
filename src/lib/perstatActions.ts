@@ -3,7 +3,7 @@ import { reportBlocks, sendPerstatBlocks, sendReminderBlocks } from './blocks';
 import { App } from '@slack/bolt';
 
 export const sendPerstat = async (app: App) => {
-    console.log('---- Sending PERSTAT Solicitation ----');
+    console.log('---- Sending Initial PERSTAT Ping ----');
     resetUserState();
     const users = await getUsers(app);
 
