@@ -1,10 +1,11 @@
-const schedule = require('node-schedule');
-const { getReportHour, getReportMin } = require('./utils');
-const { getUsers } = require('./users');
-const { reportBlocks } = require('./blocks');
-const { DATE_RANGE } = require('./utils');
+import schedule from 'node-schedule';
+import { getReportHour, getReportMin } from './utils';
+import { getUsers } from './users';
+import { reportBlocks } from './blocks';
+import { DATE_RANGE } from './utils';
+import { App } from '@slack/bolt';
 
-const sendReport = (app) => {
+export const sendReport = (app: App) => {
     const rule = new schedule.RecurrenceRule();
     rule.minute = getReportMin();
     rule.hour = getReportHour();
@@ -28,7 +29,7 @@ const sendReport = (app) => {
         });
 
         app.client.chat.postMessage({
-            channel: process.env.PERSTAT_CHANNEL_ID,
+            channel: process.env.PERSTAT_CHANNEL_ID as string,
             blocks: reportBlocks(unaccountedForReport, presentReport),
             text: 'PERSTAT Rollup Available!'
         });
@@ -36,7 +37,7 @@ const sendReport = (app) => {
 };
 
 
-module.exports = {
-    sendReport
-};
+// module.exports = {
+//     sendReport
+// };
 

@@ -1,6 +1,6 @@
-const { TIME_FORMAT_OPTS } = require("./utils");
+import { TIME_FORMAT_OPTS } from "./utils";
 
-const sendPerstatBlocks = [
+export const sendPerstatBlocks = [
     {
         type: "header",
         text: {
@@ -33,7 +33,7 @@ const sendPerstatBlocks = [
     },
 ];
 
-const sendReminderBlocks = [
+export const sendReminderBlocks = [
     {
         type: "header",
         text: {
@@ -67,7 +67,7 @@ const sendReminderBlocks = [
 ];
 
 const rollupHeader = `------- 186 CPT - PERSTAT Rollup for ${new Date().toLocaleString("en-US", TIME_FORMAT_OPTS)} -------`;
-const reportBlocks = (unaccountedForReport, presentReport) => {
+export const reportBlocks = (unaccountedForReport, presentReport) => {
     return [
         {
             type: "header",
@@ -110,8 +110,8 @@ const reportBlocks = (unaccountedForReport, presentReport) => {
     ]
 }
 
-module.exports = {
-    sendPerstatBlocks,
-    sendReminderBlocks,
-    reportBlocks
-}
+// module.exports = {
+//     sendPerstatBlocks,
+//     sendReminderBlocks,
+//     reportBlocks
+// }
