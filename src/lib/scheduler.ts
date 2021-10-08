@@ -1,6 +1,6 @@
 import { App } from "@slack/bolt";
 import { getInitialMin, getInitialHour, DATE_RANGE, getReminderHour, getReminderMin, getReportHour, getReportMin } from "./utils";
-import { Scheduler } from 'node-schedule';
+import * as Scheduler from 'node-schedule';
 import { sendPerstat, sendReport } from "./perstatActions";
 
 
