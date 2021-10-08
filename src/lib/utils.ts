@@ -1,8 +1,8 @@
-import schedule from 'node-schedule';
+import * as Scheduler from 'node-schedule';
 
 const UTC_HOUR_DIFF = 4;
 export const TIME_FORMAT_OPTS: Intl.DateTimeFormatOptions = {timeZone: 'America/New_York', dateStyle: 'medium', timeStyle: 'medium'};
-export const DATE_RANGE = process.env.DISABLE_DAY_RANGE === 'true' ? [new schedule.Range(0, 7)] : [new schedule.Range(1, 5)]
+export const DATE_RANGE = process.env.DISABLE_DAY_RANGE === 'true' ? [new Scheduler.Range(0, 7)] : [new Scheduler.Range(1, 5)]
 
 
 export const _addUTC = () => {

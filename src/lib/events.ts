@@ -27,7 +27,3 @@ export const respondToButton = async ({body, ack, say}: SlackActionMiddlewareArg
     }
 }
 
-
-// module.exports = {
-//     registerClickEvents
-// };

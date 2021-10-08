@@ -3,7 +3,3 @@ export const setUpErrorHandling = (app) => {
         console.error(error);
     });
 }
-
-// module.exports = {
-//     setUpErrorHandling
-// }

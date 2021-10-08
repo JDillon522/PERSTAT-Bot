@@ -49,13 +49,3 @@ export const markUserAsPresent = (userId) => {
         _users[userIndex].responseTime = new Date().toLocaleTimeString('en-US', TIME_FORMAT_OPTS);
     }
 };
-
-
-
-
-// module.exports = {
-//     getUser,
-//     getUsers,
-//     markUserAsPresent,
-//     resetUserState
-// };

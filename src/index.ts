@@ -6,7 +6,7 @@ import { App } from '@slack/bolt';
 import { registerClickEvents } from './lib/events';
 import { printStartupOutput } from './lib/utils';
 import { setUpErrorHandling } from './lib/errors';
-import { schedulePerstat, scheduleReport } from './lib/scheduler';
+import { schedulePerstat, scheduleReminder, scheduleReport } from './lib/scheduler';
 
 
 const app = new App({
@@ -22,7 +22,7 @@ const app = new App({
     setUpErrorHandling(app);
     registerClickEvents(app);
     schedulePerstat(app);
-    schedulePerstat(app);
+    scheduleReminder(app);
     scheduleReport(app);
 
     await app.start(parseInt(process.env.PORT as string, 10) || 3000);

@@ -109,9 +109,3 @@ export const reportBlocks = (unaccountedForReport, presentReport) => {
         },
     ]
 }
-
-// module.exports = {
-//     sendPerstatBlocks,
-//     sendReminderBlocks,
-//     reportBlocks
-// }

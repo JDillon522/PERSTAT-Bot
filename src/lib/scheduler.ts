@@ -1,7 +1,7 @@
 import { App } from "@slack/bolt";
 import { getInitialMin, getInitialHour, DATE_RANGE, getReminderHour, getReminderMin, getReportHour, getReportMin } from "./utils";
 import * as Scheduler from 'node-schedule';
-import { sendPerstat, sendReport } from "./perstatActions";
+import { sendPerstat, sendReminder, sendReport } from "./perstatActions";
 
 
 export const schedulePerstat = async (app: App) => {
@@ -15,7 +15,7 @@ export const schedulePerstat = async (app: App) => {
     });
 };
 
-export const sendReminder = (app: App) => {
+export const scheduleReminder = (app: App) => {
     const rule = new Scheduler.RecurrenceRule();
     rule.minute = getReminderMin();
     rule.hour = getReminderHour();
