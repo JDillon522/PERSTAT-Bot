@@ -1,3 +1,4 @@
+import { Block } from "@slack/types";
 import { TIME_FORMAT_OPTS } from "./utils";
 const env = process.env.ENVIRONMENT !== 'PRODUCTION' ? process.env.ENVIRONMENT : '';
 const initialHeader = `------- 186 CPT - PERSTAT ------- ${env}`
@@ -112,3 +113,102 @@ export const reportBlocks = (unaccountedForReport, presentReport) => {
         },
     ]
 }
+
+
+export const commandResponse_reportBlocks = [
+    {
+        type: "header",
+        text: {
+            type: "plain_text",
+            text: "---- PERSTAT Bot ----"
+        }
+    },
+    {
+        type: "section",
+        text: {
+            type: "mrkdwn",
+            text: "Manually building the report. Stand by..."
+        }
+    },
+    {
+        type: "divider"
+    }
+];
+
+export const commandResponse_requestBlocks = (date: Date): Block[] => {
+    const blocks = [
+        {
+            type: "header",
+            text: {
+                type: "plain_text",
+                text: "---- PERSTAT Bot ----"
+            }
+        },
+        {
+            type: "section",
+            text: {
+                type: "mrkdwn",
+                text: "Manually requesting another PERSTAT accountability"
+            }
+        },
+        {
+            type: "divider"
+        }
+    ];
+
+    if (date) {
+        blocks.push({
+            type: 'section',
+            text: {
+                type: 'mrkdwn',
+                text: `The report will be generated at ${date.toLocaleString("en-US", TIME_FORMAT_OPTS)}`
+            }
+        });
+    }
+
+    return blocks;
+}
+
+export const commandResponse_defaultBlocks = [
+    {
+        type: "header",
+        text: {
+            type: "plain_text",
+            text: "---- PERSTAT Bot ----"
+        }
+    },
+    {
+        type: "section",
+        text: {
+            type: "mrkdwn",
+            text: "I didn't recognize your command. I'm just a bot.\n\nHave mercy...\n\nType `/perstat help`"
+        }
+    },
+    {
+        type: "divider"
+    }
+];
+
+export const commandResponse_helpBlocks = [
+    {
+        type: "header",
+        text: {
+            type: "plain_text",
+            text: "---- PERSTAT Bot ----"
+        }
+    },
+    {
+        type: "section",
+        text: {
+            type: "mrkdwn",
+            text: `Syntax: \`/perstat <command> [argument]\`\n
+            - \`/perstat help\` Show this list.
+            - \`/perstat request [follow on report delay time]\` Trigger a new request. Optionally schedule a new report to run.
+            - \`/perstat report\` Trigger a new PERSTAT report rollup.
+            `
+        }
+    },
+    {
+        type: "divider"
+    }
+];

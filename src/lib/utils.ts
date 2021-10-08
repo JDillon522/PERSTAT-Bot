@@ -58,14 +58,8 @@ export const printStartupOutput = () => {
     console.log('=====================================================================');
 }
 
-// module.exports = {
-//     TIME_FORMAT_OPTS,
-//     DATE_RANGE,
-//     getInitialHour,
-//     getInitialMin,
-//     getReminderHour,
-//     getReminderMin,
-//     getReportHour,
-//     getReportMin,
-//     printStartupOutput
-// }
+export const getFutureDate = (time: number): Date => {
+    const date = new Date();
+    date.setMinutes(date.getMinutes() + time);
+    return date;
+}

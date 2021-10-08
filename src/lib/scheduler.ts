@@ -36,3 +36,9 @@ export const scheduleReport = (app: App) => {
         sendReport(app);
     });
 };
+
+export const scheduleManualReport = (app: App, date: Date) => {
+    Scheduler.scheduleJob(date, async () => {
+        sendReport(app);
+    });
+};

@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import { App } from '@slack/bolt';
-import { registerActions } from './lib/events';
+import { registerActions, registerCommands } from './lib/events';
 import { printStartupOutput } from './lib/utils';
 import { setUpErrorHandling } from './lib/errors';
 import { schedulePerstat, scheduleReminder, scheduleReport } from './lib/scheduler';
@@ -19,8 +19,14 @@ const app = new App({
 
 
 (async () => {
+    // Errors
     setUpErrorHandling(app);
+
+    // Handle interactivity
     registerActions(app);
+    registerCommands(app);
+
+    // Schedule
     schedulePerstat(app);
     scheduleReminder(app);
     scheduleReport(app);
