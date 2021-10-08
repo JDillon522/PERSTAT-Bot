@@ -21,6 +21,8 @@ export const registerCommands = (app: App) => {
         await ack();
         const args = body.text.split(' ');
 
+        console.log(`Trying to execute the following /perstat command: ${body.text}`);
+
         switch (args[0]) {
             case PerstatCommands.report:
                 await say({
