@@ -1,12 +1,15 @@
-const { TIME_FORMAT_OPTS } = require("./utils");
+import { App } from "@slack/bolt";
+import { Member } from "@slack/web-api/dist/response/UsersListResponse";
+import { BotUser } from "../models/user";
+import { TIME_FORMAT_OPTS } from "./utils";
 
-let _users = [];
+let _users: BotUser[] = [];
 
 
-const _getUsersFromSlack = async (app) => {
+const _getUsersFromSlack = async (app: App) => {
     console.log('Refreshing list of users');
-    let users = await app.client.users.list();
-    users = users.members.filter(user => !user.is_bot && !user.deleted && user.name != 'slackbot');
+    const usersList = await app.client.users.list();
+    let users: Member[] = usersList.members?.filter(user => !user.is_bot && !user.deleted && user.name != 'slackbot') || [];
 
     // During local development if we only want to ping a single user
     if (process.env.SEND_ONLY_TO_USER) {
@@ -15,15 +18,15 @@ const _getUsersFromSlack = async (app) => {
     return users;
 };
 
-const getUsers = async (app) => {
+export const getUsers = async (app) => {
     if (!_users.length) {
-        _users = await _getUsersFromSlack(app);
+        _users = await _getUsersFromSlack(app) as BotUser[];
     }
 
     return _users;
 };
 
-const getUser = (userId) => {
+export const getUser = (userId) => {
     const userIndex = _users.findIndex(user => user.id === userId);
 
     if (userIndex >= 0) {
@@ -32,11 +35,11 @@ const getUser = (userId) => {
     return null;
 }
 
-const resetUserState = () => {
+export const resetUserState = () => {
     _users = []; // TODO eventually incorporate with a DB
 }
 
-const markUserAsPresent = (userId) => {
+export const markUserAsPresent = (userId) => {
     const userIndex = _users.findIndex(user => user.id === userId);
 
     // TODO possibly use getUser() and change the user directly, but not sure if the reference value will persist
@@ -50,9 +53,9 @@ const markUserAsPresent = (userId) => {
 
 
 
-module.exports = {
-    getUser,
-    getUsers,
-    markUserAsPresent,
-    resetUserState
-};
+// module.exports = {
+//     getUser,
+//     getUsers,
+//     markUserAsPresent,
+//     resetUserState
+// };

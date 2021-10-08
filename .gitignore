@@ -1,6 +1,10 @@
 # Custom
 .env
 
+# TypeScript
+out/
+tsconfig.tsbuildinfo
+
 # Logs
 logs
 *.log

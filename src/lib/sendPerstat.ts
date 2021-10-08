@@ -1,9 +1,10 @@
 const schedule = require('node-schedule');
-const { getUsers, resetUserState } = require('./users');
-const { getInitialHour, getInitialMin, getReminderMin, getReminderHour, DATE_RANGE } = require('./utils');
-const { sendPerstatBlocks, sendReminderBlocks } = require('./blocks');
+import { getUsers, resetUserState } from './users';
+import { getInitialHour, getInitialMin, getReminderMin, getReminderHour, DATE_RANGE } from './utils';
+import { sendPerstatBlocks, sendReminderBlocks } from './blocks';
+import { App } from '@slack/bolt';
 
-const sendPerstat = async (app) => {
+export const sendPerstat = async (app: App) => {
     const rule = new schedule.RecurrenceRule();
     rule.minute = getInitialMin();
     rule.hour = getInitialHour();
@@ -18,7 +19,7 @@ const sendPerstat = async (app) => {
             console.log(`Pinging: ${user.real_name}`);
 
             app.client.chat.postMessage({
-                channel: user.id,
+                channel: user.id as string,
                 blocks: sendPerstatBlocks,
                 text: 'Time to submit your PERSTAT status'
             });
@@ -27,7 +28,7 @@ const sendPerstat = async (app) => {
 };
 
 
-const sendReminder = (app) => {
+export const sendReminder = (app: App) => {
     const rule = new schedule.RecurrenceRule();
     rule.minute = getReminderMin();
     rule.hour = getReminderHour();
@@ -43,7 +44,7 @@ const sendReminder = (app) => {
                 console.log(`Sending Reminder Ping: ${user.real_name}`);
 
                 app.client.chat.postMessage({
-                    channel: user.id,
+                    channel: user.id as string,
                     blocks: sendReminderBlocks,
                     text: 'Last Reminder to submit your PERSTAT status!'
                 });
@@ -54,7 +55,7 @@ const sendReminder = (app) => {
 
 
 
-module.exports = {
-    sendPerstat,
-    sendReminder
-};
+// module.exports = {
+//     sendPerstat,
+//     sendReminder
+// };
