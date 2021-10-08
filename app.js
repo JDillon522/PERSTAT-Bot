@@ -5,7 +5,7 @@ const { App } = require('@slack/bolt');
 const { sendPerstat, sendReminder } = require('./lib/sendPerstat.js');
 const { registerClickEvents } = require('./lib/events.js');
 const { sendReport } = require('./lib/report.js');
-const { getInitialHour, getInitialMin, getReportHour, getReportMin, getReminderMin, getReminderHour, TIME_FORMAT_OPTS, printStartupOutput } = require('./lib/utils.js');
+const { printStartupOutput } = require('./lib/utils.js');
 const { setUpErrorHandling } = require('./lib/errors.js');
 const { getUsers } = require('./lib/users.js');
 
