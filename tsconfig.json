@@ -19,7 +19,7 @@
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
-        "allowUnreachableCode": true,
+        "allowUnreachableCode": false,
         "useUnknownInCatchVariables": false, // TypeScript 4.4+ only!
     },
     "include": [

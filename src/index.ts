@@ -3,12 +3,10 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import { App } from '@slack/bolt';
-import { sendPerstat, sendReminder } from './lib/sendPerstat';
 import { registerClickEvents } from './lib/events';
-import { sendReport } from './lib/report';
 import { printStartupOutput } from './lib/utils';
 import { setUpErrorHandling } from './lib/errors';
-import { getUsers } from './lib/users';
+import { schedulePerstat, scheduleReport } from './lib/scheduler';
 
 
 const app = new App({
@@ -21,12 +19,11 @@ const app = new App({
 
 
 (async () => {
-    getUsers(app);
     setUpErrorHandling(app);
     registerClickEvents(app);
-    sendPerstat(app);
-    sendReminder(app);
-    sendReport(app);
+    schedulePerstat(app);
+    schedulePerstat(app);
+    scheduleReport(app);
 
     await app.start(parseInt(process.env.PORT as string, 10) || 3000);
 
