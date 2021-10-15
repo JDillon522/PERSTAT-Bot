@@ -15,7 +15,7 @@ export const sendPerstatBlocks = [
         type: "section",
         text: {
             type: "mrkdwn",
-            text: "Good Morning!\n\nIts Time to submit your PERSTAT status"
+            text: "Good Morning!\n\nIts Time to submit your PERSTAT status.\nUntil further notice, also submit things on the Google Sheet. https://tinyurl.com/186perstat"
         }
     },
     {
