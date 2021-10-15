@@ -74,7 +74,8 @@ export const respondToButton = async ({body, ack, say}: SlackActionMiddlewareArg
     await ack();
 
     // If there is a delay in the response from the client to the app then the client will resend the request (timeframe unknown)
-    // This is to prevent double output on the client. We still need to make sure the submit ability is disabled after submission though
+    // This is to prevent double output on the client.
+    // Disabling the button on select is more difficult than I thought
     const user = getUser(body.user.id);
     if (!user?.responded) {
         await say(`I'm glad to hear it <@${body.user.id}>.\n\nNow go forth and do great things.\n\n"I give a shit about you" - SFC Boyce`);

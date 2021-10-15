@@ -1,6 +1,7 @@
 import { getUsers, resetUserState } from './users';
 import { reportBlocks, sendPerstatBlocks, sendReminderBlocks } from './blocks';
 import { App } from '@slack/bolt';
+import { sortBy } from 'lodash';
 
 export const sendPerstat = async (app: App) => {
     console.log('---- Sending Initial PERSTAT Ping ----');
@@ -40,20 +41,18 @@ export const sendReminder = async (app: App) => {
 
 export const sendReport = async (app: App) => {
     const users = await getUsers(app);
-
-    console.log('Submitting PERSTAT Report');
-
     let presentReport = '';
     let unaccountedForReport = '';
 
-    users.forEach(user => {
-        if (user.responded) {
-            presentReport += `- <@${user.id}> at ${user.responseTime}\n`;
-        } else {
-            unaccountedForReport += `- <@${user.id}>\n`;
-        }
-
+    sortBy(users.filter(user => !user.responded), ['profile.last_name']).forEach(user => {
+        unaccountedForReport += `- <@${user.id}>\n`;
     });
+
+    sortBy(users.filter(user => user.responded), ['profile.last_name']).forEach(user => {
+        presentReport += `- <@${user.id}> at ${user.responseTime}\n`;
+    });
+
+    console.log('Submitting PERSTAT Report');
 
     app.client.chat.postMessage({
         channel: process.env.PERSTAT_CHANNEL_ID as string,
