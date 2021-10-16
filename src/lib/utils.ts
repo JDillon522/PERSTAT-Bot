@@ -46,11 +46,10 @@ export const printStartupOutput = () => {
     console.log(`Running in mode: ${process.env.ENVIRONMENT}`)
     console.log(`\nBOT will execute at the following times:
     - Initial:      Local: ${init.toLocaleTimeString('en-US', {...TIME_FORMAT_OPTS, timeStyle: 'short' })}
-                    UTC:   ${init.toUTCString()}
     - Reminder:     Local: ${rem.toLocaleTimeString('en-US', {...TIME_FORMAT_OPTS, timeStyle: 'short' })}
-                    UTC:   ${rem.toUTCString()}
     - Report:       Local: ${rep.toLocaleTimeString('en-US', {...TIME_FORMAT_OPTS, timeStyle: 'short' })}
-                    UTC:   ${rep.toUTCString()}
+    - Raw Hours:    ${getInitialHour()}, ${getReminderHour()}, ${getReminderHour()}
+
     `);
 
     console.log(`Config Features:
