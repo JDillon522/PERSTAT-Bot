@@ -17,7 +17,18 @@ export const sendPerstatBlocks = [
         type: "section",
         text: {
             type: "mrkdwn",
-            text: "Good Morning!\n\nIts Time to submit your PERSTAT status.\nUntil further notice, also submit your status <on the Google Sheet|https://tinyurl.com/186perstat>"
+            text: "Good Morning!\n\nIts Time to submit your PERSTAT status.\n"
+        }
+    },
+    {
+        type: "input",
+        element: {
+            type: "plain_text_input",
+            action_id: "perstat-remarks"
+        },
+        label: {
+            type: "plain_text",
+            text: "Optional Remarks",
         }
     },
     {
@@ -130,7 +141,6 @@ export const reportBlocks = (unaccountedForReport, vouchedForReport, presentRepo
     ]
 }
 
-
 export const commandResponse_reportBlocks = (requestingUser: BotUser): KnownBlock[] => {
     return [
         {
@@ -234,17 +244,8 @@ export const commandResponse_helpBlocks: KnownBlock[] = [
     }
 ];
 
-export const commandResponse_vouchBlocks = (requestingUser: BotUser, users: BotUser[]): KnownBlock[] => {
-    // const availableUsers = sortBy(users.filter(user => !user.responded), ['profile.last_name']);
-    // const userBlocks: PlainTextOption[] = availableUsers.map(user => {
-    //     return {
-    //         text: {
-    //             type: "plain_text",
-    //             text: `<@${user.id}>`
-    //         },
-    //         value: user.id
-    //     }
-    // });
+export const commandResponse_vouchBlocks = (requestingUser: BotUser): KnownBlock[] => {
+
     return [
         {
             type: "section",
@@ -253,22 +254,6 @@ export const commandResponse_vouchBlocks = (requestingUser: BotUser, users: BotU
                 text: `<@${requestingUser.id}> is vouching for a soldier.\nSelect who you are vouching for:`
             }
         },
-        // {
-        //     type: "input",
-        //     element: {
-        //         type: "static_select",
-        //         placeholder: {
-        //             type: "plain_text",
-        //             text: "Select a Soldier",
-        //         },
-        //         options: userBlocks,
-        //         action_id: "vouch-select"
-        //     },
-        //     label: {
-        //         type: "plain_text",
-        //         text: "Soldier",
-        //     }
-        // },
         {
 			type: "input",
 			element: {

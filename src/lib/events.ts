@@ -1,7 +1,7 @@
 import { App, SlackActionMiddlewareArgs } from '@slack/bolt';
 import { PerstatCommands } from '../models/enums';
 import { BotUser } from '../models/user';
-import { VouchActionFormatted, VouchInputs, VouchMultiSoldierSelectAction, VouchRemarksAction, VouchTypes } from '../models/vouch';
+import { VouchActionFormatted, VouchInputs, VouchMultiSoldierSelectAction, RemarksAction, VouchTypes } from '../models/vouch';
 import { commandResponse_defaultBlocks, commandResponse_helpBlocks, commandResponse_reportBlocks, commandResponse_requestBlocks, commandResponse_vouchBlocks } from './blocks';
 import { sendPerstat, sendReport } from './perstatActions';
 import { scheduleManualReport } from './scheduler';
@@ -9,12 +9,12 @@ import { markUserAsPresent, getUser, getUsers } from './users';
 import { getFutureDate, TIME_FORMAT_OPTS } from './utils';
 
 export const registerActions = (app: App) => {
-    app.action('send_perstat', async ({ body, ack, say}) => {
-        await respondToPerstat(app, {body, ack, say} as SlackActionMiddlewareArgs);
+    app.action('send_perstat', async ({ body, ack, respond}) => {
+        await respondToPerstat(app, {body, ack, respond} as SlackActionMiddlewareArgs);
     });
 
-    app.action('send_perstat_final', async ({ body, ack, say}) => {
-        await respondToPerstat(app, {body, ack, say} as SlackActionMiddlewareArgs);
+    app.action('send_perstat_final', async ({ body, ack, respond}) => {
+        await respondToPerstat(app, {body, ack, respond} as SlackActionMiddlewareArgs);
     });
 
     app.action('vouch-submit', async (action) => {
@@ -38,7 +38,7 @@ export const registerActions = (app: App) => {
                     break;
 
                 case VouchTypes.RemarksInput:
-                    collectedInputs.remarks = (input[firstKey] as VouchRemarksAction).value;
+                    collectedInputs.remarks = (input[firstKey] as RemarksAction).value;
                     break;
             }
         }
@@ -82,10 +82,9 @@ export const registerCommands = async (app: App) => {
                 break;
 
             case PerstatCommands.vouch:
-                const users = await getUsers(app);
                 await say({
                     channel: body.channel_id,
-                    blocks: commandResponse_vouchBlocks(user, users),
+                    blocks: commandResponse_vouchBlocks(user),
                     text: 'Vouch for another soldier who cannot submit'
                 });
 
@@ -111,7 +110,7 @@ export const registerCommands = async (app: App) => {
     });
 }
 
-export const respondToPerstat = async (app, {body, ack, say}: SlackActionMiddlewareArgs) => {
+export const respondToPerstat = async (app, {body, ack, respond}: SlackActionMiddlewareArgs) => {
     await ack();
 
     // If there is a delay in the response from the client to the app then the client will resend the request (timeframe unknown)
@@ -119,9 +118,26 @@ export const respondToPerstat = async (app, {body, ack, say}: SlackActionMiddlew
     // Disabling the button on select is more difficult than I thought
     const user = await getUser(body.user.id, app);
     if (!user?.responded) {
-        await say(`I'm glad to hear it <@${body.user.id}>.\n\nNow go forth and do great things.\n\n'I give a shit about you' - SFC Boyce`);
+        await respond({
+            replace_original: true,
+            // Dont adjust the alignment of the string. Slack dumps it out weird
+            text: `
+=====================================================
+I'm glad to hear it <@${body.user.id}>.
+Now go forth and do great things.
 
-        markUserAsPresent(body.user.id);
+'I give a shit about you' - SFC Boyce
+
+Until further notice, also submit your status on the Google Sheet:
+https://tinyurl.com/186perstat
+=====================================================`
+
+        });
+
+        const values = body['state'].values;
+        const remarks: RemarksAction = values[Object.keys(values)[0]]?.['perstat-remarks'];
+
+        markUserAsPresent(body.user.id, remarks?.value);
         console.log(`Ping Successful: ${user?.real_name} at ${new Date().toLocaleTimeString('en-US', TIME_FORMAT_OPTS)}`);
     }
 }

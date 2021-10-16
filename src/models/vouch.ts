@@ -3,7 +3,7 @@ export interface VouchMultiSoldierSelectAction {
     type: VouchTypes.MultiSoldierSelect
 }
 
-export interface VouchRemarksAction {
+export interface RemarksAction {
     value: string;
     type: VouchTypes.RemarksInput
 }
@@ -14,7 +14,7 @@ export interface VouchActionFormatted {
     vouched_by: string;
 }
 
-export type VouchInputs = VouchMultiSoldierSelectAction | VouchRemarksAction;
+export type VouchInputs = VouchMultiSoldierSelectAction | RemarksAction;
 
 export enum VouchTypes {
     MultiSoldierSelect = 'multi_users_select',

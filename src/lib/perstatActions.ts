@@ -2,6 +2,7 @@ import { getUsers, resetUserState } from './users';
 import { reportBlocks, sendPerstatBlocks, sendReminderBlocks } from './blocks';
 import { App } from '@slack/bolt';
 import { sortBy } from 'lodash';
+import { RemarksAction } from '../models/vouch';
 
 export const sendPerstat = async (app: App) => {
     console.log('---- Sending Initial PERSTAT Ping ----');
@@ -52,13 +53,12 @@ export const sendReport = async (app: App) => {
 
     // Users who responded
     sortBy(users.filter(user => user.responded && !user.vouchedBy), ['profile.last_name']).forEach(user => {
-        presentReport += `- <@${user.id}> at ${user.responseTime}\n`;
+        presentReport += `- <@${user.id}> at ${user.responseTime}` + addRemarks(user.remarks as string);
     });
 
     // Users who were vouched for by someone else
     sortBy(users.filter(user => user.responded && user.vouchedBy), ['profile.last_name']).forEach(user => {
-        vouchedForReport += `- <@${user.id}> was vouched for by <@${user.vouchedBy}> at ${user.vouchedOnDate} ${user.remarks ? '\n\tRemarks: ' + user.remarks : ''}\n`;
-
+        vouchedForReport += `- <@${user.id}> was vouched for by <@${user.vouchedBy}> at ${user.vouchedOnDate}` + addRemarks(user.remarks as string);
     });
 
     console.log('Submitting PERSTAT Report');
@@ -69,3 +69,7 @@ export const sendReport = async (app: App) => {
         text: 'PERSTAT Rollup Available!'
     });
 };
+
+const addRemarks = (remarks: string): string => {
+    return `${remarks ? '\n\tRemarks: ' + remarks : ''}\n`
+}
