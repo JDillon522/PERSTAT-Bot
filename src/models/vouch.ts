@@ -1,11 +1,13 @@
+import { BlockInputTypes } from "./blockInputs";
+
 export interface VouchMultiSoldierSelectAction {
     selected_users: string[];
-    type: VouchTypes.MultiSoldierSelect
+    type: BlockInputTypes.UserSelect
 }
 
 export interface RemarksAction {
     value: string;
-    type: VouchTypes.RemarksInput
+    type: BlockInputTypes.TextInput
 }
 
 export interface VouchActionFormatted {
@@ -15,8 +17,3 @@ export interface VouchActionFormatted {
 }
 
 export type VouchInputs = VouchMultiSoldierSelectAction | RemarksAction;
-
-export enum VouchTypes {
-    MultiSoldierSelect = 'multi_users_select',
-    RemarksInput = 'plain_text_input'
-}

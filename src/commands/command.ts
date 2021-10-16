@@ -2,11 +2,10 @@ import { App } from "@slack/bolt";
 import { commandResponse_reportBlocks, commandResponse_requestBlocks, commandResponse_vouchBlocks, commandResponse_setTeamBlocks, commandResponse_helpBlocks, commandResponse_defaultBlocks } from "../lib/blocks";
 import { sendReport, sendPerstat } from "../perstat/perstat";
 import { scheduleManualReport } from "../lib/scheduler";
-import { getUser, markUserAsPresent } from "../lib/users";
-import { getFutureDate, TIME_FORMAT_OPTS } from "../lib/utils";
+import { getUser } from "../lib/users";
+import { getFutureDate } from "../lib/utils";
 import { PerstatCommands } from "../models/enums";
 import { BotUser } from "../models/user";
-import { VouchActionFormatted } from "../models/vouch";
 
 export const registerCommands = async (app: App) => {
     app.command('/perstat', async ({ body, ack, say }) => {
@@ -75,15 +74,5 @@ export const registerCommands = async (app: App) => {
                     text: 'PERSTAT Bot doesn\'t know what you\'re saying...'
                 });
         }
-
-
     });
-}
-
-export const handleVouchInputs = async (input: VouchActionFormatted, app) => {
-    for await (const user of input.selected_users) {
-        markUserAsPresent(user, input.remarks, input.vouched_by);
-        const vouchedUser = await getUser(user, app);
-        console.log(`Vouch Successful: ${vouchedUser?.real_name} at ${new Date().toLocaleTimeString('en-US', TIME_FORMAT_OPTS)}`);
-    }
 }

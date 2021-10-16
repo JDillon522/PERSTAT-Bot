@@ -8,6 +8,7 @@ import { setUpErrorHandling } from './lib/errors';
 import { schedulePerstat, scheduleReminder, scheduleReport } from './lib/scheduler';
 import { registerPerstatActions } from './perstat/actions';
 import { registerCommands } from './commands/command';
+import { registerCommandActions } from './commands/actions';
 
 
 const app = new App({
@@ -26,6 +27,7 @@ const app = new App({
     // Handle interactivity
     registerPerstatActions(app);
     registerCommands(app);
+    registerCommandActions(app);
 
     // Schedule
     schedulePerstat(app);

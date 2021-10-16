@@ -1,5 +1,6 @@
 import { KnownBlock, PlainTextOption } from "@slack/types";
 import { sortBy } from "lodash";
+import { SetTeamActions } from "../models/setTeam";
 import { BotUser } from "../models/user";
 import { TIME_FORMAT_OPTS } from "./utils";
 const env = process.env.ENVIRONMENT !== 'PRODUCTION' ? process.env.ENVIRONMENT : '';
@@ -314,7 +315,7 @@ export const commandResponse_setTeamBlocks = (requestingUser: BotUser): KnownBlo
 					type: "plain_text",
 					text: "Select Only ONE Team Lead",
 				},
-				action_id: "team-lead-soldier-select"
+				action_id: SetTeamActions.TeamLead
 			},
 			label: {
 				type: "plain_text",
@@ -329,7 +330,7 @@ export const commandResponse_setTeamBlocks = (requestingUser: BotUser): KnownBlo
 					type: "plain_text",
 					text: "Selecte One or More Members",
 				},
-				action_id: "team-member-soldier-select"
+				action_id: SetTeamActions.TeamMembers
 			},
 			label: {
 				type: "plain_text",
@@ -340,7 +341,7 @@ export const commandResponse_setTeamBlocks = (requestingUser: BotUser): KnownBlo
             type: "input",
             element: {
                 type: "plain_text_input",
-                action_id: "team-name"
+                action_id: SetTeamActions.TeamName
             },
             label: {
                 type: "plain_text",
