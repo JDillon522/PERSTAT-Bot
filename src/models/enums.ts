@@ -1,5 +1,6 @@
 export enum PerstatCommands {
     report = 'report',
     request = 'request',
-    help = 'help'
+    help = 'help',
+    vouch = 'vouch'
 }

@@ -1,4 +1,6 @@
-import { Block } from "@slack/types";
+import { KnownBlock, PlainTextOption } from "@slack/types";
+import { sortBy } from "lodash";
+import { BotUser } from "../models/user";
 import { TIME_FORMAT_OPTS } from "./utils";
 const env = process.env.ENVIRONMENT !== 'PRODUCTION' ? process.env.ENVIRONMENT : '';
 const initialHeader = `------- 186 CPT - PERSTAT ------- ${env}`
@@ -15,7 +17,7 @@ export const sendPerstatBlocks = [
         type: "section",
         text: {
             type: "mrkdwn",
-            text: "Good Morning!\n\nIts Time to submit your PERSTAT status.\nUntil further notice, also submit things on the Google Sheet. https://tinyurl.com/186perstat"
+            text: "Good Morning!\n\nIts Time to submit your PERSTAT status.\nUntil further notice, also submit your status <on the Google Sheet|https://tinyurl.com/186perstat>"
         }
     },
     {
@@ -70,8 +72,8 @@ export const sendReminderBlocks = [
     },
 ];
 
-const rollupHeader = `------- 186 CPT - PERSTAT Rollup for ${new Date().toLocaleString("en-US", TIME_FORMAT_OPTS)} ------- ${env}`;
-export const reportBlocks = (unaccountedForReport, presentReport) => {
+const rollupHeader = `------- 186 CPT - PERSTAT Rollup for ${new Date().toLocaleTimeString("en-US", TIME_FORMAT_OPTS)} ------- ${env}`;
+export const reportBlocks = (unaccountedForReport, vouchedForReport, presentReport) => {
     return [
         {
             type: "header",
@@ -98,6 +100,20 @@ export const reportBlocks = (unaccountedForReport, presentReport) => {
             type: "header",
             text: {
                 type: "plain_text",
+                text: `- Vouched For`
+            }
+        },
+        {
+            type: "section",
+            text: {
+                type: "mrkdwn",
+                text: vouchedForReport.length ? vouchedForReport : "- N/A"
+            }
+        },
+        {
+            type: "header",
+            text: {
+                type: "plain_text",
                 text: `- Present`
             }
         },
@@ -115,28 +131,8 @@ export const reportBlocks = (unaccountedForReport, presentReport) => {
 }
 
 
-export const commandResponse_reportBlocks = [
-    {
-        type: "header",
-        text: {
-            type: "plain_text",
-            text: "---- PERSTAT Bot ----"
-        }
-    },
-    {
-        type: "section",
-        text: {
-            type: "mrkdwn",
-            text: "Manually building the report. Stand by..."
-        }
-    },
-    {
-        type: "divider"
-    }
-];
-
-export const commandResponse_requestBlocks = (date: Date): Block[] => {
-    const blocks = [
+export const commandResponse_reportBlocks = (requestingUser: BotUser): KnownBlock[] => {
+    return [
         {
             type: "header",
             text: {
@@ -148,7 +144,29 @@ export const commandResponse_requestBlocks = (date: Date): Block[] => {
             type: "section",
             text: {
                 type: "mrkdwn",
-                text: "Manually requesting another PERSTAT accountability"
+                text: `<@${requestingUser.id}> is manually building the report. Stand by...`
+            }
+        },
+        {
+            type: "divider"
+        }
+    ]
+};
+
+export const commandResponse_requestBlocks = (requestingUser: BotUser, date: Date): KnownBlock[] => {
+    const blocks: KnownBlock[] = [
+        {
+            type: "header",
+            text: {
+                type: "plain_text",
+                text: "---- PERSTAT Bot ----"
+            }
+        },
+        {
+            type: "section",
+            text: {
+                type: "mrkdwn",
+                text: `<@${requestingUser.id}> is manually requesting another PERSTAT accountability`
             }
         },
         {
@@ -161,7 +179,7 @@ export const commandResponse_requestBlocks = (date: Date): Block[] => {
             type: 'section',
             text: {
                 type: 'mrkdwn',
-                text: `The report will be generated at ${date.toLocaleString("en-US", TIME_FORMAT_OPTS)}`
+                text: `The report will be generated at ${date.toLocaleTimeString("en-US", TIME_FORMAT_OPTS)}`
             }
         });
     }
@@ -169,27 +187,29 @@ export const commandResponse_requestBlocks = (date: Date): Block[] => {
     return blocks;
 }
 
-export const commandResponse_defaultBlocks = [
-    {
-        type: "header",
-        text: {
-            type: "plain_text",
-            text: "---- PERSTAT Bot ----"
+export const commandResponse_defaultBlocks = (requestingUser: BotUser): KnownBlock[] => {
+    return [
+        {
+            type: "header",
+            text: {
+                type: "plain_text",
+                text: "---- PERSTAT Bot ----"
+            }
+        },
+        {
+            type: "section",
+            text: {
+                type: "mrkdwn",
+                text: `I didn't recognize your command <@${requestingUser.id}>. I'm just a bot.\n\nHave mercy...\n\nType \`/perstat help\``
+            }
+        },
+        {
+            type: "divider"
         }
-    },
-    {
-        type: "section",
-        text: {
-            type: "mrkdwn",
-            text: "I didn't recognize your command. I'm just a bot.\n\nHave mercy...\n\nType `/perstat help`"
-        }
-    },
-    {
-        type: "divider"
-    }
-];
+    ];
+};
 
-export const commandResponse_helpBlocks = [
+export const commandResponse_helpBlocks: KnownBlock[] = [
     {
         type: "header",
         text: {
@@ -205,6 +225,7 @@ export const commandResponse_helpBlocks = [
             - \`/perstat help\` Show this list.
             - \`/perstat request [follow on report delay time]\` Trigger a new request. Optionally schedule a new report to run.
             - \`/perstat report\` Trigger a new PERSTAT report rollup.
+            - \`/perstat vouch\` Vouch for a person who is unavailable
             `
         }
     },
@@ -212,3 +233,80 @@ export const commandResponse_helpBlocks = [
         type: "divider"
     }
 ];
+
+export const commandResponse_vouchBlocks = (requestingUser: BotUser, users: BotUser[]): KnownBlock[] => {
+    // const availableUsers = sortBy(users.filter(user => !user.responded), ['profile.last_name']);
+    // const userBlocks: PlainTextOption[] = availableUsers.map(user => {
+    //     return {
+    //         text: {
+    //             type: "plain_text",
+    //             text: `<@${user.id}>`
+    //         },
+    //         value: user.id
+    //     }
+    // });
+    return [
+        {
+            type: "section",
+            text: {
+                type: "mrkdwn",
+                text: `<@${requestingUser.id}> is vouching for a soldier.\nSelect who you are vouching for:`
+            }
+        },
+        // {
+        //     type: "input",
+        //     element: {
+        //         type: "static_select",
+        //         placeholder: {
+        //             type: "plain_text",
+        //             text: "Select a Soldier",
+        //         },
+        //         options: userBlocks,
+        //         action_id: "vouch-select"
+        //     },
+        //     label: {
+        //         type: "plain_text",
+        //         text: "Soldier",
+        //     }
+        // },
+        {
+			type: "input",
+			element: {
+				type: "multi_users_select",
+				placeholder: {
+					type: "plain_text",
+					text: "Select Soldiers",
+				},
+				action_id: "vouch-multi-soldier-select"
+			},
+			label: {
+				type: "plain_text",
+				text: "Vouch for the following Soldiers",
+			}
+		},
+        {
+            type: "input",
+            element: {
+                type: "plain_text_input",
+                action_id: "vouch-remarks"
+            },
+            label: {
+                type: "plain_text",
+                text: "Remarks",
+            }
+        },
+        {
+            type: "actions",
+            elements: [
+                {
+                    type: "button",
+                    text: {
+                        type: "plain_text",
+                        text: "Submit",
+                    },
+                    action_id: "vouch-submit"
+                }
+            ]
+        }
+    ];
+}

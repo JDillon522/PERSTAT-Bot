@@ -42,21 +42,30 @@ export const sendReminder = async (app: App) => {
 export const sendReport = async (app: App) => {
     const users = await getUsers(app);
     let presentReport = '';
+    let vouchedForReport = '';
     let unaccountedForReport = '';
 
+    // Unaccounted for users
     sortBy(users.filter(user => !user.responded), ['profile.last_name']).forEach(user => {
         unaccountedForReport += `- <@${user.id}>\n`;
     });
 
-    sortBy(users.filter(user => user.responded), ['profile.last_name']).forEach(user => {
+    // Users who responded
+    sortBy(users.filter(user => user.responded && !user.vouchedBy), ['profile.last_name']).forEach(user => {
         presentReport += `- <@${user.id}> at ${user.responseTime}\n`;
+    });
+
+    // Users who were vouched for by someone else
+    sortBy(users.filter(user => user.responded && user.vouchedBy), ['profile.last_name']).forEach(user => {
+        vouchedForReport += `- <@${user.id}> was vouched for by <@${user.vouchedBy}> at ${user.vouchedOnDate} ${user.remarks ? '\n\tRemarks: ' + user.remarks : ''}\n`;
+
     });
 
     console.log('Submitting PERSTAT Report');
 
     app.client.chat.postMessage({
         channel: process.env.PERSTAT_CHANNEL_ID as string,
-        blocks: reportBlocks(unaccountedForReport, presentReport),
+        blocks: reportBlocks(unaccountedForReport, vouchedForReport, presentReport),
         text: 'PERSTAT Rollup Available!'
     });
 };

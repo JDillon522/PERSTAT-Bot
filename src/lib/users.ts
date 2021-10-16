@@ -26,7 +26,10 @@ export const getUsers = async (app) => {
     return _users;
 };
 
-export const getUser = (userId) => {
+export const getUser = async (userId, app) => {
+    if (!_users.length) {
+        _users = await _getUsersFromSlack(app) as BotUser[];
+    }
     const userIndex = _users.findIndex(user => user.id === userId);
 
     if (userIndex >= 0) {
@@ -39,7 +42,7 @@ export const resetUserState = () => {
     _users = []; // TODO eventually incorporate with a DB
 }
 
-export const markUserAsPresent = (userId) => {
+export const markUserAsPresent = (userId: string, remarks?: string, vouchedBy?: string) => {
     const userIndex = _users.findIndex(user => user.id === userId);
 
     // TODO possibly use getUser() and change the user directly, but not sure if the reference value will persist
@@ -47,5 +50,16 @@ export const markUserAsPresent = (userId) => {
     if (userIndex >= 0) {
         _users[userIndex].responded = true;
         _users[userIndex].responseTime = new Date().toLocaleTimeString('en-US', TIME_FORMAT_OPTS);
+
+        if (remarks) {
+            _users[userIndex].remarks = remarks;
+        }
+        if(vouchedBy) {
+            _users[userIndex].vouchedBy = vouchedBy;
+            _users[userIndex].vouchedOnDate = new Date().toLocaleTimeString('en-US', TIME_FORMAT_OPTS);
+        }
+    } else {
+        console.error(`User Not Found: Could not mark as present user: ${userId}`);
     }
+
 };

@@ -1,7 +1,7 @@
 import * as Scheduler from 'node-schedule';
 
 const UTC_HOUR_DIFF = 4;
-export const TIME_FORMAT_OPTS: Intl.DateTimeFormatOptions = {timeZone: 'America/New_York', dateStyle: 'medium', timeStyle: 'medium'};
+export const TIME_FORMAT_OPTS: Intl.DateTimeFormatOptions = {timeZone: 'America/New_York', /*dateStyle: 'medium',*/ timeStyle: 'medium', hour12: false};
 export const DATE_RANGE = process.env.DISABLE_DAY_RANGE === 'true' ? [new Scheduler.Range(0, 7)] : [new Scheduler.Range(1, 5)]
 
 
@@ -42,7 +42,7 @@ export const printStartupOutput = () => {
     rep.setHours(getReportHour(), getReportMin());
 
     console.log('=====================================================================');
-    console.log(`PERSTAT BOT is Alive as of ${new Date().toLocaleString('en-US', TIME_FORMAT_OPTS)}`);
+    console.log(`PERSTAT BOT is Alive as of ${new Date().toLocaleTimeString('en-US', TIME_FORMAT_OPTS)}`);
     console.log(`Running in mode: ${process.env.ENVIRONMENT}`)
     console.log(`\nBOT will execute at the following times:
     - Initial:      ${sol.toLocaleTimeString('en-US', {...TIME_FORMAT_OPTS, timeStyle: 'short' })}
