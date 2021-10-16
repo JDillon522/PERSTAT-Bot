@@ -34,10 +34,10 @@ export const getReportMin = () => {
 }
 
 export const printStartupOutput = () => {
-    const sol = new Date();
+    const init = new Date();
     const rem = new Date();
     const rep = new Date();
-    sol.setHours(getInitialHour(), getInitialMin());
+    init.setHours(getInitialHour(), getInitialMin());
     rem.setHours(getReminderHour(), getReminderMin());
     rep.setHours(getReportHour(), getReportMin());
 
@@ -45,9 +45,12 @@ export const printStartupOutput = () => {
     console.log(`PERSTAT BOT is Alive as of ${new Date().toLocaleTimeString('en-US', TIME_FORMAT_OPTS)}`);
     console.log(`Running in mode: ${process.env.ENVIRONMENT}`)
     console.log(`\nBOT will execute at the following times:
-    - Initial:      ${sol.toLocaleTimeString('en-US', {...TIME_FORMAT_OPTS, timeStyle: 'short' })}
-    - Reminder:     ${rem.toLocaleTimeString('en-US', {...TIME_FORMAT_OPTS, timeStyle: 'short' })}
-    - Report:       ${rep.toLocaleTimeString('en-US', {...TIME_FORMAT_OPTS, timeStyle: 'short' })}
+    - Initial:      Local: ${init.toLocaleTimeString('en-US', {...TIME_FORMAT_OPTS, timeStyle: 'short' })}
+                    UTC:   ${init.toUTCString()}
+    - Reminder:     Local: ${rem.toLocaleTimeString('en-US', {...TIME_FORMAT_OPTS, timeStyle: 'short' })}
+                    UTC:   ${rem.toUTCString()}
+    - Report:       Local: ${rep.toLocaleTimeString('en-US', {...TIME_FORMAT_OPTS, timeStyle: 'short' })}
+                    UTC:   ${rep.toUTCString()}
     `);
 
     console.log(`Config Features:
