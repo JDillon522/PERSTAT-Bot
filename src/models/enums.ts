@@ -3,5 +3,5 @@ export enum PerstatCommands {
     request = 'request',
     help = 'help',
     vouch = 'vouch',
-    setLead = 'set-group'
+    setTeam = 'set-team'
 }

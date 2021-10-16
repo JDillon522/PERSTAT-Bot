@@ -1,5 +1,5 @@
-import { getUsers, resetUserState } from './users';
-import { reportBlocks, sendPerstatBlocks, sendReminderBlocks } from './blocks';
+import { getUsers, resetUserState } from '../lib/users';
+import { reportBlocks, sendPerstatBlocks, sendReminderBlocks } from '../lib/blocks';
 import { App } from '@slack/bolt';
 import { sortBy } from 'lodash';
 import { RemarksAction } from '../models/vouch';

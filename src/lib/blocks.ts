@@ -295,3 +295,70 @@ export const commandResponse_vouchBlocks = (requestingUser: BotUser): KnownBlock
         }
     ];
 }
+
+export const commandResponse_setTeamBlocks = (requestingUser: BotUser): KnownBlock[] => {
+
+    return [
+        {
+            type: "section",
+            text: {
+                type: "mrkdwn",
+                text: `<@${requestingUser.id}> is setting the team members under a soldier.`
+            }
+        },
+        {
+			type: "input",
+			element: {
+				type: "multi_users_select",
+				placeholder: {
+					type: "plain_text",
+					text: "Select Only ONE Team Lead",
+				},
+				action_id: "team-lead-soldier-select"
+			},
+			label: {
+				type: "plain_text",
+				text: "Team Lead",
+			}
+		},
+        {
+			type: "input",
+			element: {
+				type: "multi_users_select",
+				placeholder: {
+					type: "plain_text",
+					text: "Selecte One or More Members",
+				},
+				action_id: "team-member-soldier-select"
+			},
+			label: {
+				type: "plain_text",
+				text: "Team Members",
+			}
+		},
+        {
+            type: "input",
+            element: {
+                type: "plain_text_input",
+                action_id: "team-name"
+            },
+            label: {
+                type: "plain_text",
+                text: "Team Name",
+            }
+        },
+        {
+            type: "actions",
+            elements: [
+                {
+                    type: "button",
+                    text: {
+                        type: "plain_text",
+                        text: "Submit",
+                    },
+                    action_id: "set-team-submit"
+                }
+            ]
+        }
+    ];
+}

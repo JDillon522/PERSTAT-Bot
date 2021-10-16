@@ -52,7 +52,7 @@ export const printStartupOutput = () => {
 
     console.log(`Config Features:
     - Disable Date Range: ${process.env.DISABLE_DAY_RANGE === 'true'}
-    - Send Requests To A Single User: ${process.env.SEND_ONLY_TO_USER ? 'User: ' + process.env.SEND_ONLY_TO_USER : 'false'}
+    - Send Requests To A Single User: ${process.env.SEND_ONLY_TO_USER ? process.env.SEND_ONLY_TO_USER : 'false'}
     - Disable Report: ${process.env.DISABLE_REPORT === 'true'}
     `);
     console.log('=====================================================================');

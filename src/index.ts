@@ -3,10 +3,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import { App } from '@slack/bolt';
-import { registerActions, registerCommands } from './lib/events';
 import { printStartupOutput } from './lib/utils';
 import { setUpErrorHandling } from './lib/errors';
 import { schedulePerstat, scheduleReminder, scheduleReport } from './lib/scheduler';
+import { registerPerstatActions } from './perstat/actions';
+import { registerCommands } from './commands/command';
 
 
 const app = new App({
@@ -23,7 +24,7 @@ const app = new App({
     setUpErrorHandling(app);
 
     // Handle interactivity
-    registerActions(app);
+    registerPerstatActions(app);
     registerCommands(app);
 
     // Schedule
