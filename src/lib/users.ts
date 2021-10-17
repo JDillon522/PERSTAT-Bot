@@ -21,42 +21,31 @@ const _getUsersFromSlack = async (app: App) => {
 };
 
 const _normalizeDbUserDataWithSlack = async (db: Client): Promise<void> => {
-    // iterate through slack users
-        // if slack user is in db users,
-            // tack on db user info
-        // else add user to db
     for await (const user of _users) {
-        const matchingDbUser = _dbUsers.find(dbUser => dbUser.slack_id === user.id);
-        if (matchingDbUser) {
-            user.data = matchingDbUser;
-        } else {
-            const newDbUser = await addSlackUserToDb(db, user.id as string);
-            user.data = newDbUser;
+        // if slack user is in db, tack db data onto slack user object
+        let matchingDbUser = _dbUsers.find(dbUser => dbUser.slack_id === user.id);
+        if (!matchingDbUser) {
+            // if not in the db add it and then add it to the slack user
+            matchingDbUser = await addSlackUserToDb(db, user.id as string);
         }
+
+        user.data = matchingDbUser;
     }
 }
 
 export const loadUsers = async (db: Client, app: App): Promise<void> => {
-    const dbUsers = _dbUsers = await getAllUsersFromDb(db) as DbUser[];
-    const slackUsers = _users = await _getUsersFromSlack(app) as BotUser[];
+    _dbUsers = await getAllUsersFromDb(db) as DbUser[];
+    _users = await _getUsersFromSlack(app) as BotUser[];
 
     _normalizeDbUserDataWithSlack(db);
 }
 
-export const getUsers = async (app: App): Promise<BotUser[]> => {
+export const getUsers = (): BotUser[] => {
     return _users;
 };
 
-export const getUser = async (userId, app) => {
-    if (!_users.length) {
-        _users = await _getUsersFromSlack(app) as BotUser[];
-    }
-    const userIndex = _users.findIndex(user => user.id === userId);
-
-    if (userIndex >= 0) {
-        return _users[userIndex];
-    }
-    return null;
+export const getUser = (userId): BotUser => {
+    return _users.find(user => user.id === userId) as BotUser;
 }
 
 export const resetUserState = () => {

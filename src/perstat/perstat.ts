@@ -4,10 +4,10 @@ import { App } from '@slack/bolt';
 import { sortBy } from 'lodash';
 import { RemarksAction } from '../models/vouch';
 
-export const sendPerstat = async (app: App) => {
+export const sendPerstat = (app: App) => {
     console.log('---- Sending Initial PERSTAT Ping ----');
     resetUserState();
-    const users = await getUsers(app);
+    const users = getUsers();
 
     users.forEach(user => {
         console.log(`Pinging: ${user.real_name}`);
@@ -21,10 +21,10 @@ export const sendPerstat = async (app: App) => {
 };
 
 
-export const sendReminder = async (app: App) => {
+export const sendReminder = (app: App) => {
 
     console.log('---- Sending PERSTAT REMINDERS ----');
-    const users = await getUsers(app);
+    const users = getUsers();
 
     users.forEach(user => {
         if (!user.responded) {
@@ -40,8 +40,8 @@ export const sendReminder = async (app: App) => {
     });
 }
 
-export const sendReport = async (app: App) => {
-    const users = await getUsers(app);
+export const sendReport = (app: App) => {
+    const users = getUsers();
     let presentReport = '';
     let vouchedForReport = '';
     let unaccountedForReport = '';

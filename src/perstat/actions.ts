@@ -19,7 +19,7 @@ export const respondToPerstat = async (app, {body, ack, respond}: SlackActionMid
     // If there is a delay in the response from the client to the app then the client will resend the request (timeframe unknown)
     // This is to prevent double output on the client.
     // Disabling the button on select is more difficult than I thought
-    const user = await getUser(body.user.id, app);
+    const user = getUser(body.user.id);
     if (!user?.responded) {
         await respond({
             replace_original: true,
