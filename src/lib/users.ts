@@ -1,10 +1,12 @@
 import { App } from "@slack/bolt";
 import { Member } from "@slack/web-api/dist/response/UsersListResponse";
-import { BotUser } from "../models/user";
+import { Client } from "pg";
+import { addSlackUserToDb, getAllUsersFromDb } from "../database/bot_user_info";
+import { BotUser, DbUser } from "../models/user";
 import { TIME_FORMAT_OPTS } from "./utils";
 
 let _users: BotUser[] = [];
-
+let _dbUsers: DbUser[] = [];
 
 const _getUsersFromSlack = async (app: App) => {
     console.log('Refreshing list of users');
@@ -18,11 +20,30 @@ const _getUsersFromSlack = async (app: App) => {
     return users;
 };
 
-export const getUsers = async (app) => {
-    if (!_users.length) {
-        _users = await _getUsersFromSlack(app) as BotUser[];
+const _normalizeDbUserDataWithSlack = async (db: Client): Promise<void> => {
+    // iterate through slack users
+        // if slack user is in db users,
+            // tack on db user info
+        // else add user to db
+    for await (const user of _users) {
+        const matchingDbUser = _dbUsers.find(dbUser => dbUser.slack_id === user.id);
+        if (matchingDbUser) {
+            user.data = matchingDbUser;
+        } else {
+            const newDbUser = await addSlackUserToDb(db, user.id as string);
+            user.data = newDbUser;
+        }
     }
+}
 
+export const loadUsers = async (db: Client, app: App): Promise<void> => {
+    const dbUsers = _dbUsers = await getAllUsersFromDb(db) as DbUser[];
+    const slackUsers = _users = await _getUsersFromSlack(app) as BotUser[];
+
+    _normalizeDbUserDataWithSlack(db);
+}
+
+export const getUsers = async (app: App): Promise<BotUser[]> => {
     return _users;
 };
 

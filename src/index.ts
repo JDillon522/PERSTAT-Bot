@@ -9,6 +9,8 @@ import { schedulePerstat, scheduleReminder, scheduleReport } from './lib/schedul
 import { registerPerstatActions } from './perstat/actions';
 import { registerCommands } from './commands/command';
 import { registerCommandActions } from './commands/actions';
+import { connectDatabase } from './database/connection';
+import { loadUsers } from './lib/users';
 
 
 const app = new App({
@@ -21,6 +23,10 @@ const app = new App({
 
 
 (async () => {
+    // Connect to the Database
+    const db = connectDatabase();
+    loadUsers(db, app);
+
     // Errors
     setUpErrorHandling(app);
 
