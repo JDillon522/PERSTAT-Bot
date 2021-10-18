@@ -33,7 +33,7 @@ const app = new App({
     // Handle interactivity
     registerPerstatActions(app);
     registerCommands(app);
-    registerCommandActions(app);
+    registerCommandActions(app, db);
 
     // Schedule
     schedulePerstat(app);

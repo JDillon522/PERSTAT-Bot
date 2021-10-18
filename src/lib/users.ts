@@ -48,10 +48,6 @@ export const getUser = (userId): BotUser => {
     return _users.find(user => user.id === userId) as BotUser;
 }
 
-export const resetUserState = () => {
-    _users = []; // TODO eventually incorporate with a DB
-}
-
 export const markUserAsPresent = (userId: string, remarks?: string, vouchedBy?: string) => {
     const userIndex = _users.findIndex(user => user.id === userId);
 
@@ -71,5 +67,15 @@ export const markUserAsPresent = (userId: string, remarks?: string, vouchedBy?: 
     } else {
         console.error(`User Not Found: Could not mark as present user: ${userId}`);
     }
-
 };
+
+export const updateUser = (updatedUser: DbUser): void => {
+    const index = _users.findIndex(user => user.id === updatedUser.slack_id);
+
+    // If for some insane reason we get out of sync and dont have the user
+    try {
+        _users[index].data = updatedUser;
+    } catch (err) {
+        throw err;
+    }
+}

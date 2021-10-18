@@ -1,12 +1,10 @@
-import { getUsers, resetUserState } from '../lib/users';
+import { getUsers } from '../lib/users';
 import { reportBlocks, sendPerstatBlocks, sendReminderBlocks } from '../lib/blocks';
 import { App } from '@slack/bolt';
 import { sortBy } from 'lodash';
-import { RemarksAction } from '../models/vouch';
 
 export const sendPerstat = (app: App) => {
     console.log('---- Sending Initial PERSTAT Ping ----');
-    resetUserState();
     const users = getUsers();
 
     users.forEach(user => {

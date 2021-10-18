@@ -1,12 +1,13 @@
 import { App } from "@slack/bolt";
-import { markUserAsPresent, getUser } from "../lib/users";
+import { Client } from "pg";
+import { updateUserTeamSettings } from "../database/bot_user_info";
+import { markUserAsPresent, getUser, updateUser } from "../lib/users";
 import { TIME_FORMAT_OPTS } from "../lib/utils";
 import { BlockInputTypes } from "../models/blockInputs";
 import { SetTeamActionFormatted, SetTeamActions, SetTeamMultiSoldierSelectAction, SetTeamName } from "../models/setTeam";
-import { SetUserInfo } from "../models/team";
 import { VouchActionFormatted, VouchInputs, VouchMultiSoldierSelectAction, RemarksAction } from "../models/vouch";
 
-export const registerCommandActions = (app: App) => {
+export const registerCommandActions = (app: App, db: Client) => {
     app.action('vouch-submit', async (action) => {
         await action.ack();
 
@@ -33,77 +34,73 @@ export const registerCommandActions = (app: App) => {
             }
         }
 
-        handleVouchInputs(collectedInputs, app);
+        handleVouchInputs(collectedInputs);
     });
 
     app.action('set-team-submit', async (action) => {
         await action.ack();
 
-        await action.respond({
+        const stateValues = action.body['state']?.values;
+        let collectedInputs: SetTeamActionFormatted = {
+            selected_team_lead: '',
+            selected_users: [],
+            team_name: ''
+        };
+        let selectedUsersString = '';
+
+        for (const value in stateValues) {
+            // Yuck
+            const input: VouchInputs = stateValues[value];
+            const firstKey = Object.keys(input)[0];
+
+            switch (firstKey) {
+                case SetTeamActions.TeamLead:
+                    collectedInputs.selected_team_lead = (input[firstKey] as SetTeamMultiSoldierSelectAction).selected_users[0];
+                    break;
+
+                case SetTeamActions.TeamMembers:
+                    collectedInputs.selected_users = (input[firstKey] as SetTeamMultiSoldierSelectAction).selected_users;
+                    collectedInputs.selected_users.forEach(user => selectedUsersString += `<@${user}> `);
+                    break;
+
+                case SetTeamActions.TeamName:
+                    collectedInputs.team_name = (input[firstKey] as SetTeamName).value;
+                    break;
+            }
+        }
+
+        await handleSetTeamInput(collectedInputs, db);
+
+        action.respond({
             replace_original: true,
-            text: '\n\nHold up there...\n\nThis is still under construction.'
+            text: `
+=====================================================
+TEAM SETTINGS CHANGED:
+
+Team: ${collectedInputs.team_name}
+Lead: <@${collectedInputs.selected_team_lead}>
+Members: ${selectedUsersString}
+=====================================================
+            `
         })
-        // const stateValues = action.body['state']?.values;
-        // let collectedInputs: SetTeamActionFormatted = {
-        //     selected_team_lead: '',
-        //     selected_users: [],
-        //     team_name: ''
-        // };
-
-        // for (const value in stateValues) {
-        //     // Yuck
-        //     const input: VouchInputs = stateValues[value];
-        //     const firstKey = Object.keys(input)[0];
-
-        //     switch (firstKey) {
-        //         case SetTeamActions.TeamLead:
-        //             collectedInputs.selected_team_lead = (input[firstKey] as SetTeamMultiSoldierSelectAction).selected_users[0];
-        //             break;
-
-        //         case SetTeamActions.TeamMembers:
-        //             collectedInputs.selected_users = (input[firstKey] as SetTeamMultiSoldierSelectAction).selected_users;
-        //             break;
-
-        //         case SetTeamActions.TeamName:
-        //             collectedInputs.team_name = (input[firstKey] as SetTeamName).value;
-        //             break;
-        //     }
-        // }
-
-        // handleSetTeamInput(collectedInputs, app, action.body.token);
     });
 }
 
-export const handleVouchInputs = async (input: VouchActionFormatted, app: App) => {
+export const handleVouchInputs = async (input: VouchActionFormatted) => {
     for await (const user of input.selected_users) {
         markUserAsPresent(user, input.remarks, input.vouched_by);
-        const vouchedUser = await getUser(user, app);
+        const vouchedUser = getUser(user);
         console.log(`Vouch Successful: ${vouchedUser?.real_name} at ${new Date().toLocaleTimeString('en-US', TIME_FORMAT_OPTS)}`);
     }
 }
 
-export const handleSetTeamInput = async (input: SetTeamActionFormatted, app: App, token: string) => {
-    // Set team lead
-    sendProfileUpdate(
-        input.selected_team_lead,
-        {
-            assignedTeam: input.team_name,
-            teamRole: 'lead',
-            perstatRequired: true,
-            includedInReport: true
-        },
-        app,
-        token
-    );
-}
+export const handleSetTeamInput = async (input: SetTeamActionFormatted, db: Client) => {
 
-// TODO errors tend to be not_allowed_token_type and failed auth
-const sendProfileUpdate = async (userId: string, input: SetUserInfo, app: App, token: string) => {
-    await app.client.users.profile.set({
-        // token: token,
-        user: userId,
-        // profile: JSON.stringify(input)
-        name: 'team',
-        value: input.assignedTeam
-    });
+    const updatedUser = await updateUserTeamSettings(db, input.team_name, 'lead', input.selected_team_lead);
+    updateUser(updatedUser);
+
+    for await (const user of input.selected_users) {
+        const updatedUser = await updateUserTeamSettings(db, input.team_name, 'member', user);
+        updateUser(updatedUser);
+    }
 }
