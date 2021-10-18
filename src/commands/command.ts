@@ -11,7 +11,7 @@ export const registerCommands = async (app: App) => {
     app.command('/perstat', async ({ body, ack, say }) => {
         await ack();
         const args = body.text.split(' ');
-        const user: BotUser = await getUser(body.user_id, app) as BotUser;
+        const user: BotUser = getUser(body.user_id) as BotUser;
         console.log(`Trying to execute the following /perstat command: ${body.text} from ${user.profile?.real_name}`);
 
         switch (args[0]) {
