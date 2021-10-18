@@ -2,11 +2,12 @@ import { App } from "@slack/bolt";
 import { Member } from "@slack/web-api/dist/response/UsersListResponse";
 import { Client } from "pg";
 import { addSlackUserToDb, getAllUsersFromDb } from "../database/bot_user_info";
-import { BotUser, DbUser } from "../models/user";
+import { BotUserInfo } from "../models/team";
+import { BotUser } from "../models/user";
 import { TIME_FORMAT_OPTS } from "./utils";
 
 let _users: BotUser[] = [];
-let _dbUsers: DbUser[] = [];
+let _dbUsers: BotUserInfo[] = [];
 
 const _getUsersFromSlack = async (app: App) => {
     console.log('Refreshing list of users');
@@ -34,7 +35,7 @@ const _normalizeDbUserDataWithSlack = async (db: Client): Promise<void> => {
 }
 
 export const loadUsers = async (db: Client, app: App): Promise<void> => {
-    _dbUsers = await getAllUsersFromDb(db) as DbUser[];
+    _dbUsers = await getAllUsersFromDb(db) as BotUserInfo[];
     _users = await _getUsersFromSlack(app) as BotUser[];
 
     _normalizeDbUserDataWithSlack(db);
@@ -69,7 +70,7 @@ export const markUserAsPresent = (userId: string, remarks?: string, vouchedBy?: 
     }
 };
 
-export const updateUser = (updatedUser: DbUser): void => {
+export const updateUser = (updatedUser: BotUserInfo): void => {
     const index = _users.findIndex(user => user.id === updatedUser.slack_id);
 
     // If for some insane reason we get out of sync and dont have the user
