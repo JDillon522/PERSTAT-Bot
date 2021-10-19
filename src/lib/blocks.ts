@@ -1,6 +1,7 @@
 import { KnownBlock, PlainTextOption } from '@slack/types';
-import { sortBy } from 'lodash';
+import _, { sortBy } from 'lodash';
 import { SetTeamActions } from '../models/setTeam';
+import { Team, TeamReport } from '../models/team';
 import { BotUser } from '../models/user';
 import { TIME_FORMAT_OPTS } from './utils';
 const env = process.env.ENVIRONMENT !== 'PRODUCTION' ? process.env.ENVIRONMENT : '';
@@ -85,61 +86,73 @@ export const sendReminderBlocks = [
 ];
 
 const rollupHeader = `------- 186 CPT - PERSTAT Rollup for ${new Date().toLocaleTimeString('en-US', TIME_FORMAT_OPTS)} ------- ${env}`;
-export const reportBlocks = (unaccountedForReport, vouchedForReport, presentReport) => {
-    return [
-        {
+export const reportBlocks = (builtReportBlocks: KnownBlock[]) => {
+    builtReportBlocks.unshift({
+        type: 'header',
+        text: {
+            type: 'plain_text',
+            text: rollupHeader
+        }
+    })
+
+    builtReportBlocks.push({
+        type: 'divider'
+    });
+
+    return builtReportBlocks;
+}
+
+export const buildReportBlocks = (teamReport: TeamReport): KnownBlock[] => {
+    let reportBlocks: KnownBlock[] = [];
+
+    for (const teamKey in teamReport) {
+        const team: Team = teamReport[teamKey];
+        reportBlocks.push({
             type: 'header',
             text: {
                 type: 'plain_text',
-                text: rollupHeader
+                text: team.teamName.toUpperCase()
             }
-        },
-        {
-            type: 'header',
-            text: {
-                type: 'plain_text',
-                text: '- Unaccounted For'
-            }
-        },
-        {
-            type: 'section',
-            text: {
-                type: 'mrkdwn',
-                text: unaccountedForReport.length ? unaccountedForReport : '- N/A'
-            }
-        },
-        {
-            type: 'header',
-            text: {
-                type: 'plain_text',
-                text: '- Vouched For'
-            }
-        },
-        {
-            type: 'section',
-            text: {
-                type: 'mrkdwn',
-                text: vouchedForReport.length ? vouchedForReport : '- N/A'
-            }
-        },
-        {
-            type: 'header',
-            text: {
-                type: 'plain_text',
-                text: '- Present'
-            }
-        },
-        {
-            type: 'section',
-            text: {
-                type: 'mrkdwn',
-                text: presentReport.length ? presentReport : '- N/A'
-            }
-        },
-        {
-            type: 'divider'
-        },
-    ]
+        });
+
+        const unaccountedForTeamMembers: BotUser[] = team.members.filter(member => !member.data?.latestResponse?.response_valid);
+        // If the lead hasnt responded
+        if (team.lead && !team.lead.data?.latestResponse?.response_valid) {
+            unaccountedForTeamMembers.unshift(team.lead);
+        }
+
+        if (!unaccountedForTeamMembers.length) {
+            reportBlocks.push(
+                {
+                    type: 'section',
+                    text: {
+                        type: 'mrkdwn',
+                        text: 'All accounted for!'
+                    }
+                });
+
+        } else {
+            let report = 'Unaccounted for:\n';
+
+            unaccountedForTeamMembers.forEach(user => {
+                if (user.data?.team_role === 'lead') {
+                    report += `- Team lead: <@${user.id}>\n`;
+                } else {
+                    report += `- <@${user.id}>\n`;
+                }
+            });
+            reportBlocks.push(
+                {
+                    type: 'section',
+                    text: {
+                        type: 'mrkdwn',
+                        text: report
+                    }
+                });
+        }
+    }
+
+    return reportBlocks;
 }
 
 export const commandResponse_reportBlocks = (requestingUser: BotUser): KnownBlock[] => {

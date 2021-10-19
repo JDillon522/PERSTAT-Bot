@@ -1,10 +1,12 @@
+import { BotUser } from "./user";
+
 export interface BotUserInfo {
     id: number;
     slack_id: string;
-    assignedTeam: string;
-    teamRole: 'lead'|'member';
-    perstatRequired: boolean;
-    includedInReport: boolean;
+    assigned_team: string;
+    team_role: 'lead'|'member';
+    perstat_required: boolean;
+    included_in_report: boolean;
     latestResponse?: UserResponse
 }
 
@@ -19,4 +21,13 @@ export interface UserResponse extends NewUserResponse {
     id: number;
     response_valid: boolean;
     time_responded: string;
+}
+
+export interface Team {
+    teamName: string;
+    lead: BotUser | null;
+    members: BotUser[];
+}
+export interface TeamReport {
+    [key: string]: Team;
 }

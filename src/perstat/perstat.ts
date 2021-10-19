@@ -1,8 +1,9 @@
 import { getUsers } from '../lib/users';
-import { reportBlocks, sendPerstatBlocks, sendReminderBlocks } from '../lib/blocks';
+import { buildReportBlocks, reportBlocks, sendPerstatBlocks, sendReminderBlocks } from '../lib/blocks';
 import { App } from '@slack/bolt';
 import { sortBy } from 'lodash';
 import { formatCurrentDate } from '../lib/utils';
+import { TeamReport } from '../models/team';
 
 export const sendPerstat = (app: App) => {
     console.log('---- Sending Initial PERSTAT Ping ----');
@@ -45,29 +46,52 @@ export const sendReport = (app: App) => {
     let vouchedForReport = '';
     let unaccountedForReport = '';
 
-    // Unaccounted for users
-    sortBy(users.filter(user => !user.data?.latestResponse?.response_valid), ['profile.last_name']).forEach(user => {
-        unaccountedForReport += `- <@${user.id}>\n`;
+    // Report by team
+    const teamStatus: TeamReport = {};
+
+    users.forEach(user => {
+        const data = user.data;
+        let team = teamStatus[data?.assigned_team as string];
+
+        if (!team) {
+            team = teamStatus[data?.assigned_team as string] = {
+                lead: null,
+                members: [],
+                teamName: data?.assigned_team as string
+            }
+        }
+
+        if (data?.team_role === 'lead') {
+            team.lead = user;
+        } else {
+            team.members.push(user);
+        }
     });
 
-    // Users who responded
-    sortBy(users.filter(user => user.data?.latestResponse?.response_valid && !user.data?.latestResponse.vouched_by), ['profile.last_name']).forEach(user => {
-        presentReport += `- <@${user.id}> at ${user.data?.latestResponse?.time_responded}` +
-                        addRemarks(user.data?.latestResponse?.remarks as string);
-    });
 
-    // Users who were vouched for by someone else
-    sortBy(users.filter(user => user.data?.latestResponse?.response_valid && user.data?.latestResponse.vouched_by), ['profile.last_name']).forEach(user => {
-        const vouchTime = formatCurrentDate(user.data?.latestResponse?.date_responded as string);
-        vouchedForReport += `- <@${user.id}> was vouched for by <@${user.data?.latestResponse?.vouched_by}> at ${vouchTime}` +
-                            addRemarks(user.data?.latestResponse?.remarks as string);
-    });
+    // // Unaccounted for users
+    // sortBy(users.filter(user => !user.data?.latestResponse?.response_valid), ['profile.last_name']).forEach(user => {
+    //     unaccountedForReport += `- <@${user.id}>\n`;
+    // });
+
+    // // Users who responded
+    // sortBy(users.filter(user => user.data?.latestResponse?.response_valid && !user.data?.latestResponse.vouched_by), ['profile.last_name']).forEach(user => {
+    //     presentReport += `- <@${user.id}> at ${user.data?.latestResponse?.time_responded}` +
+    //                     addRemarks(user.data?.latestResponse?.remarks as string);
+    // });
+
+    // // Users who were vouched for by someone else
+    // sortBy(users.filter(user => user.data?.latestResponse?.response_valid && user.data?.latestResponse.vouched_by), ['profile.last_name']).forEach(user => {
+    //     const vouchTime = formatCurrentDate(user.data?.latestResponse?.date_responded as string);
+    //     vouchedForReport += `- <@${user.id}> was vouched for by <@${user.data?.latestResponse?.vouched_by}> at ${vouchTime}` +
+    //                         addRemarks(user.data?.latestResponse?.remarks as string);
+    // });
 
     console.log('Submitting PERSTAT Report');
 
     app.client.chat.postMessage({
         channel: process.env.PERSTAT_CHANNEL_ID as string,
-        blocks: reportBlocks(unaccountedForReport, vouchedForReport, presentReport),
+        blocks: reportBlocks(buildReportBlocks(teamStatus)),
         text: 'PERSTAT Rollup Available!'
     });
 };
