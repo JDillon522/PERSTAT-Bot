@@ -7,8 +7,6 @@ import { TeamReport } from '../models/team';
 
 export const sendPerstat = (app: App) => {
     console.log('---- Sending Initial PERSTAT Ping ----');
-
-    resetUserResponseStateForNewReport();
     const users = getUsers();
 
     users.forEach(user => {

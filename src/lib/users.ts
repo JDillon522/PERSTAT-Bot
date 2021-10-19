@@ -89,15 +89,21 @@ export const updateUser = (updatedUser: BotUserInfo): void => {
     }
 }
 
-export const resetUserResponseStateForNewReport = (): void => {
-    _users.forEach(user => {
-        const latestResponse = user.data?.latestResponse;
-        const goodUntil = latestResponse?.date_good_until ? new Date(latestResponse?.date_good_until as string).toDateString() : null;
+export const resetUserResponseStateForNewReport = async (db: Client, app: App, manualReset = false): Promise<void> => {
+    if (process.env.ENVIRONMENT === 'DEVELOPMENT' || manualReset) {
+        _users.forEach(user => {
+            const latestResponse = user.data?.latestResponse;
+            const now = new Date().toDateString();
+            const goodUntil = latestResponse?.date_good_until ? new Date(latestResponse?.date_good_until as string).toDateString() : null;
 
-        if (!user.data?.perstat_required || !goodUntil || goodUntil < new Date().toDateString()) {
-            return;
-        }
+            if (!user.data?.perstat_required || (goodUntil && goodUntil > now)) {
+                return;
+            } else {
+                user.data.latestResponse = null;
+            }
 
-        user.data.latestResponse = null;
-    });
+        });
+    } else {
+        await loadUsers(db, app);
+    }
 }

@@ -2,12 +2,13 @@ import { App } from '@slack/bolt';
 import { commandResponse_reportBlocks, commandResponse_requestBlocks, commandResponse_vouchBlocks, commandResponse_setTeamBlocks, commandResponse_helpBlocks, commandResponse_defaultBlocks } from '../lib/blocks';
 import { sendReport, sendPerstat } from '../perstat/perstat';
 import { scheduleManualReport } from '../lib/scheduler';
-import { getUser } from '../lib/users';
+import { getUser, resetUserResponseStateForNewReport } from '../lib/users';
 import { getFutureDate } from '../lib/utils';
 import { PerstatCommands } from '../models/enums';
 import { BotUser } from '../models/user';
+import { Client } from 'pg';
 
-export const registerCommands = async (app: App) => {
+export const registerCommands = async (app: App, db: Client) => {
     app.command('/perstat', async ({ body, ack, say }) => {
         await ack();
         const args = body.text.split(' ');
@@ -38,6 +39,7 @@ export const registerCommands = async (app: App) => {
                     text: 'Manually triggering another PERSTAT request'
                 });
 
+                await resetUserResponseStateForNewReport(db, app, true);
                 sendPerstat(app);
                 break;
 

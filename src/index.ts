@@ -32,11 +32,11 @@ const app = new App({
 
     // Handle interactivity
     registerPerstatActions(app, db);
-    registerCommands(app);
+    registerCommands(app, db);
     registerCommandActions(app, db);
 
     // Schedule
-    schedulePerstat(app);
+    schedulePerstat(app, db);
     scheduleReminder(app);
     scheduleReport(app);
 

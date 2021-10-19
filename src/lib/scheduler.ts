@@ -2,15 +2,18 @@ import { App } from "@slack/bolt";
 import { getInitialMin, getInitialHour, DATE_RANGE, getReminderHour, getReminderMin, getReportHour, getReportMin } from "./utils";
 import * as Scheduler from 'node-schedule';
 import { sendPerstat, sendReminder, sendReport } from "../perstat/perstat";
+import { resetUserResponseStateForNewReport } from "./users";
+import { Client } from "pg";
 
 
-export const schedulePerstat = (app: App) => {
+export const schedulePerstat = async (app: App, db: Client) => {
     const rule = new Scheduler.RecurrenceRule();
     rule.minute = getInitialMin();
     rule.hour = getInitialHour();
     rule.dayOfWeek = DATE_RANGE;
 
-    Scheduler.scheduleJob(rule, () => {
+    await Scheduler.scheduleJob(rule, async () => {
+        await resetUserResponseStateForNewReport(db, app);
         sendPerstat(app);
     });
 };

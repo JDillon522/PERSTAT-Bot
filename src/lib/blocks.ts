@@ -296,7 +296,8 @@ export const commandResponse_helpBlocks: KnownBlock[] = [
             type: 'mrkdwn',
             text: `Syntax: \`/perstat <command> [argument]\`\n
             - \`/perstat help\` Show this list.
-            - \`/perstat request [follow on report delay time]\` Trigger a new request. Optionally schedule a new report to run.
+            - \`/perstat request [follow on report delay time]\` Trigger a new request. This will clear the previous request state.
+                    Optionally schedule a new report to run.
             - \`/perstat report\` Trigger a new PERSTAT report rollup.
             - \`/perstat vouch\` Vouch for a person who is unavailable
             - \`/perstat set-team\` Set a team lead, its members, and wether or not they are reported on the PERSTAT
