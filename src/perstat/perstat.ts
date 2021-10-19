@@ -1,4 +1,4 @@
-import { getUsers } from '../lib/users';
+import { getUsers, resetUserResponseStateForNewReport } from '../lib/users';
 import { buildReportBlocks, reportBlocks, sendPerstatBlocks, sendReminderBlocks } from '../lib/blocks';
 import { App } from '@slack/bolt';
 import { sortBy } from 'lodash';
@@ -7,6 +7,8 @@ import { TeamReport } from '../models/team';
 
 export const sendPerstat = (app: App) => {
     console.log('---- Sending Initial PERSTAT Ping ----');
+
+    resetUserResponseStateForNewReport();
     const users = getUsers();
 
     users.forEach(user => {
@@ -47,9 +49,9 @@ export const sendReminder = (app: App) => {
 
 export const sendReport = (app: App) => {
     const users = getUsers();
-    let presentReport = '';
-    let vouchedForReport = '';
-    let unaccountedForReport = '';
+    // let presentReport = '';
+    // let vouchedForReport = '';
+    // let unaccountedForReport = '';
 
     // Report by team
     const teamStatus: TeamReport = {};

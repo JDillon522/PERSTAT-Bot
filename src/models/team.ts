@@ -7,7 +7,7 @@ export interface BotUserInfo {
     team_role: 'lead'|'member';
     perstat_required: boolean;
     included_in_report: boolean;
-    latestResponse?: UserResponse
+    latestResponse?: UserResponse | null;
 }
 
 export interface NewUserResponse {

@@ -88,3 +88,16 @@ export const updateUser = (updatedUser: BotUserInfo): void => {
         throw err;
     }
 }
+
+export const resetUserResponseStateForNewReport = (): void => {
+    _users.forEach(user => {
+        const latestResponse = user.data?.latestResponse;
+        const goodUntil = latestResponse?.date_good_until ? new Date(latestResponse?.date_good_until as string).toDateString() : null;
+
+        if (!user.data?.perstat_required || !goodUntil || goodUntil < new Date().toDateString()) {
+            return;
+        }
+
+        user.data.latestResponse = null;
+    });
+}
