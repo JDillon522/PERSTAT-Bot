@@ -115,7 +115,19 @@ export const buildReportBlocks = (teamReport: TeamReport): KnownBlock[] => {
             }
         });
 
-        const unaccountedForTeamMembers: BotUser[] = team.members.filter(member => !member.data?.latestResponse?.response_valid);
+        const unaccountedForTeamMembers: BotUser[] = team.members.filter(member =>
+            !member.data?.latestResponse?.response_valid &&
+            member.data?.included_in_report
+        );
+        const accountedForWithRemarks: BotUser[] = team.members.filter(member =>
+            member.data?.latestResponse?.response_valid &&
+            member.data?.latestResponse?.remarks &&
+            !member.data?.latestResponse.vouched_by
+        );
+        const vouchedFor: BotUser[] = team.members.filter(member =>
+            member.data?.latestResponse?.response_valid &&
+            member.data?.latestResponse.vouched_by
+        );
         // If the lead hasnt responded
         if (team.lead && !team.lead.data?.latestResponse?.response_valid) {
             unaccountedForTeamMembers.unshift(team.lead);
@@ -140,6 +152,43 @@ export const buildReportBlocks = (teamReport: TeamReport): KnownBlock[] => {
                 } else {
                     report += `- <@${user.id}>\n`;
                 }
+            });
+            reportBlocks.push(
+                {
+                    type: 'section',
+                    text: {
+                        type: 'mrkdwn',
+                        text: report
+                    }
+                });
+        }
+
+        if (accountedForWithRemarks.length) {
+            let report = 'Present with Remarks:\n';
+
+            accountedForWithRemarks.forEach(user => {
+                report += `- <@${user.id}>: \n---"${user.data?.latestResponse?.remarks}"\n`;
+            });
+            reportBlocks.push(
+                {
+                    type: 'section',
+                    text: {
+                        type: 'mrkdwn',
+                        text: report
+                    }
+                });
+        }
+
+        if (vouchedFor.length) {
+            let report = 'Vouched For:\n';
+
+            vouchedFor.forEach(user => {
+                report += `- <@${user.id}> vouched for by: <@${user.data?.latestResponse?.vouched_by}>\n`;
+
+                if (user.data?.latestResponse?.remarks) {
+                    report += `---"${user.data?.latestResponse?.remarks}"\n`;
+                }
+
             });
             reportBlocks.push(
                 {

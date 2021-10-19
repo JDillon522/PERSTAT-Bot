@@ -10,13 +10,18 @@ export const sendPerstat = (app: App) => {
     const users = getUsers();
 
     users.forEach(user => {
-        console.log(`Pinging: ${user.real_name}`);
+        if (user.data?.perstat_required) {
+            console.log(`Pinging: ${user.real_name}`);
 
-        app.client.chat.postMessage({
-            channel: user.id as string,
-            blocks: sendPerstatBlocks,
-            text: 'Time to submit your PERSTAT status'
-        });
+            app.client.chat.postMessage({
+                channel: user.id as string,
+                blocks: sendPerstatBlocks,
+                text: 'Time to submit your PERSTAT status'
+            });
+        } else {
+            console.log(`Skipping - not included in perstat: ${user.real_name}`);
+        }
+
     });
 };
 
@@ -54,10 +59,11 @@ export const sendReport = (app: App) => {
         let team = teamStatus[data?.assigned_team as string];
 
         if (!team) {
-            team = teamStatus[data?.assigned_team as string] = {
+            const teamName = data?.assigned_team ? data?.assigned_team as string : 'Unassigned';
+            team = teamStatus[teamName] = {
                 lead: null,
                 members: [],
-                teamName: data?.assigned_team as string
+                teamName: teamName
             }
         }
 

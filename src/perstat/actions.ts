@@ -21,7 +21,7 @@ export const respondToPerstat = async (db: Client, {body, ack, respond}: SlackAc
     // This is to prevent double output on the client.
     // Disabling the button on select is more difficult than I thought
     const user = getUser(body.user.id);
-    if (!user?.responded) {
+    if (!user?.data?.latestResponse?.response_valid) {
         await respond({
             replace_original: true,
             // Dont adjust the alignment of the string. Slack dumps it out weird
