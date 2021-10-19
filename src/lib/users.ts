@@ -1,16 +1,16 @@
-import { App } from "@slack/bolt";
-import { Member } from "@slack/web-api/dist/response/UsersListResponse";
-import { Client } from "pg";
-import { addSlackUserToDb, getAllUsersFromDb } from "../database/bot_user_info";
-import { BotUserInfo } from "../models/team";
-import { BotUser } from "../models/user";
-import { TIME_FORMAT_OPTS } from "./utils";
+import { App } from '@slack/bolt';
+import { Member } from '@slack/web-api/dist/response/UsersListResponse';
+import { Client } from 'pg';
+import { addSlackUserToDb, getAllUsersFromDb } from '../database/bot_user_info';
+import { setResponse } from '../database/user_responses';
+import { BotUserInfo, NewUserResponse, UserResponse } from '../models/team';
+import { BotUser } from '../models/user';
+import { TIME_FORMAT_OPTS } from './utils';
 
 let _users: BotUser[] = [];
 let _dbUsers: BotUserInfo[] = [];
 
 const _getUsersFromSlack = async (app: App) => {
-    console.log('Refreshing list of users');
     const usersList = await app.client.users.list();
     let users: Member[] = usersList.members?.filter(user => !user.is_bot && !user.deleted && user.name != 'slackbot') || [];
 
@@ -35,10 +35,14 @@ const _normalizeDbUserDataWithSlack = async (db: Client): Promise<void> => {
 }
 
 export const loadUsers = async (db: Client, app: App): Promise<void> => {
+    console.log('Refreshing list of users from Slack and the DB');
+
     _dbUsers = await getAllUsersFromDb(db) as BotUserInfo[];
     _users = await _getUsersFromSlack(app) as BotUser[];
 
-    _normalizeDbUserDataWithSlack(db);
+    await _normalizeDbUserDataWithSlack(db);
+    console.log('User normalization complete');
+
 }
 
 export const getUsers = (): BotUser[] => {
@@ -49,22 +53,22 @@ export const getUser = (userId): BotUser => {
     return _users.find(user => user.id === userId) as BotUser;
 }
 
-export const markUserAsPresent = (userId: string, remarks?: string, vouchedBy?: string) => {
+export const markUserAsPresent = async (db: Client, userId: string, remarks?: string, vouchedBy?: string) => {
     const userIndex = _users.findIndex(user => user.id === userId);
 
     // TODO possibly use getUser() and change the user directly, but not sure if the reference value will persist
     // JS is weird
     if (userIndex >= 0) {
-        _users[userIndex].responded = true;
-        _users[userIndex].responseTime = new Date().toLocaleTimeString('en-US', TIME_FORMAT_OPTS);
+        const response: NewUserResponse = {
+            remarks: remarks as string | null,
+            vouched_by: vouchedBy as string | null,
+            date_responded: new Date().toUTCString(),
+            date_good_until: null, // TODO
+            bot_user_info_id: _users[userIndex].data?.id as number
+        }
+        const newResponse = await setResponse(db, response);
+        _users[userIndex].data!.latestResponse = newResponse as UserResponse;
 
-        if (remarks) {
-            _users[userIndex].remarks = remarks;
-        }
-        if(vouchedBy) {
-            _users[userIndex].vouchedBy = vouchedBy;
-            _users[userIndex].vouchedOnDate = new Date().toLocaleTimeString('en-US', TIME_FORMAT_OPTS);
-        }
     } else {
         console.error(`User Not Found: Could not mark as present user: ${userId}`);
     }

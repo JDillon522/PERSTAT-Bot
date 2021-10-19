@@ -6,7 +6,7 @@ export const DATE_RANGE = process.env.DISABLE_DAY_RANGE === 'true' ? [new Schedu
 
 
 export const _addUTC = () => {
-    return process.env.ENVIRONMENT != "DEVELOPMENT" ? UTC_HOUR_DIFF : 0;
+    return process.env.ENVIRONMENT != 'DEVELOPMENT' ? UTC_HOUR_DIFF : 0;
 }
 
 export const getInitialHour = () => {
@@ -60,8 +60,16 @@ export const printStartupOutput = () => {
     console.log('=====================================================================');
 }
 
-export const getFutureDate = (time: number): Date => {
+export const getFutureDate = (extraDays: number): Date => {
     const date = new Date();
-    date.setMinutes(date.getMinutes() + time);
+    date.setMinutes(date.getMinutes() + extraDays);
     return date;
+}
+
+export const formatCurrentDate = (date: string): string => {
+    return date ? new Date(date).toLocaleDateString('en-US', {...TIME_FORMAT_OPTS, dateStyle: 'medium' }) : '';
+}
+
+export const formatCurrentTime = (time: string): string => {
+    return time ? new Date(time).toLocaleDateString('en-US', {...TIME_FORMAT_OPTS }) : '';
 }

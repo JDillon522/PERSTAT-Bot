@@ -2,6 +2,7 @@ import { getUsers } from '../lib/users';
 import { reportBlocks, sendPerstatBlocks, sendReminderBlocks } from '../lib/blocks';
 import { App } from '@slack/bolt';
 import { sortBy } from 'lodash';
+import { formatCurrentDate } from '../lib/utils';
 
 export const sendPerstat = (app: App) => {
     console.log('---- Sending Initial PERSTAT Ping ----');
@@ -25,7 +26,7 @@ export const sendReminder = (app: App) => {
     const users = getUsers();
 
     users.forEach(user => {
-        if (!user.responded) {
+        if (!user.data?.latestResponse?.response_valid) {
 
             console.log(`Sending Reminder Ping: ${user.real_name}`);
 
@@ -45,18 +46,21 @@ export const sendReport = (app: App) => {
     let unaccountedForReport = '';
 
     // Unaccounted for users
-    sortBy(users.filter(user => !user.responded), ['profile.last_name']).forEach(user => {
+    sortBy(users.filter(user => !user.data?.latestResponse?.response_valid), ['profile.last_name']).forEach(user => {
         unaccountedForReport += `- <@${user.id}>\n`;
     });
 
     // Users who responded
-    sortBy(users.filter(user => user.responded && !user.vouchedBy), ['profile.last_name']).forEach(user => {
-        presentReport += `- <@${user.id}> at ${user.responseTime}` + addRemarks(user.remarks as string);
+    sortBy(users.filter(user => user.data?.latestResponse?.response_valid && !user.data?.latestResponse.vouched_by), ['profile.last_name']).forEach(user => {
+        presentReport += `- <@${user.id}> at ${user.data?.latestResponse?.time_responded}` +
+                        addRemarks(user.data?.latestResponse?.remarks as string);
     });
 
     // Users who were vouched for by someone else
-    sortBy(users.filter(user => user.responded && user.vouchedBy), ['profile.last_name']).forEach(user => {
-        vouchedForReport += `- <@${user.id}> was vouched for by <@${user.vouchedBy}> at ${user.vouchedOnDate}` + addRemarks(user.remarks as string);
+    sortBy(users.filter(user => user.data?.latestResponse?.response_valid && user.data?.latestResponse.vouched_by), ['profile.last_name']).forEach(user => {
+        const vouchTime = formatCurrentDate(user.data?.latestResponse?.date_responded as string);
+        vouchedForReport += `- <@${user.id}> was vouched for by <@${user.data?.latestResponse?.vouched_by}> at ${vouchTime}` +
+                            addRemarks(user.data?.latestResponse?.remarks as string);
     });
 
     console.log('Submitting PERSTAT Report');

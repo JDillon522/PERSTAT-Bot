@@ -31,7 +31,7 @@ const app = new App({
     setUpErrorHandling(app);
 
     // Handle interactivity
-    registerPerstatActions(app);
+    registerPerstatActions(app, db);
     registerCommands(app);
     registerCommandActions(app, db);
 

@@ -1,19 +1,20 @@
 import { App, SlackActionMiddlewareArgs } from "@slack/bolt";
+import { Client } from "pg";
 import { getUser, markUserAsPresent } from "../lib/users";
 import { TIME_FORMAT_OPTS } from "../lib/utils";
 import { RemarksAction } from "../models/vouch";
 
-export const registerPerstatActions = (app: App) => {
+export const registerPerstatActions = (app: App, db: Client) => {
     app.action('send_perstat', async ({ body, ack, respond}) => {
-        await respondToPerstat(app, {body, ack, respond} as SlackActionMiddlewareArgs);
+        await respondToPerstat(db, {body, ack, respond} as SlackActionMiddlewareArgs);
     });
 
     app.action('send_perstat_final', async ({ body, ack, respond}) => {
-        await respondToPerstat(app, {body, ack, respond} as SlackActionMiddlewareArgs);
+        await respondToPerstat(db, {body, ack, respond} as SlackActionMiddlewareArgs);
     });
 }
 
-export const respondToPerstat = async (app, {body, ack, respond}: SlackActionMiddlewareArgs) => {
+export const respondToPerstat = async (db: Client, {body, ack, respond}: SlackActionMiddlewareArgs) => {
     await ack();
 
     // If there is a delay in the response from the client to the app then the client will resend the request (timeframe unknown)
@@ -40,7 +41,7 @@ https://tinyurl.com/186perstat
         const values = body['state'].values;
         const remarks: RemarksAction = values[Object.keys(values)[0]]?.['perstat-remarks'];
 
-        markUserAsPresent(body.user.id, remarks?.value);
+        markUserAsPresent(db, body.user.id, remarks?.value);
         console.log(`Ping Successful: ${user?.real_name} at ${new Date().toLocaleTimeString('en-US', TIME_FORMAT_OPTS)}`);
     }
 }

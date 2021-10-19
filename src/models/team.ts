@@ -5,14 +5,18 @@ export interface BotUserInfo {
     teamRole: 'lead'|'member';
     perstatRequired: boolean;
     includedInReport: boolean;
-    latestResponse: UserResponses
+    latestResponse?: UserResponse
 }
 
-export interface UserResponses {
-    id: number;
+export interface NewUserResponse {
     bot_user_info_id: number;
-    date_responded: Date;
+    date_responded: string;
+    date_good_until: string | null;
+    remarks: string | null;
+    vouched_by: string | null;
+}
+export interface UserResponse extends NewUserResponse {
+    id: number;
+    response_valid: boolean;
     time_responded: string;
-    date_good_until: Date;
-    remarks: string;
 }

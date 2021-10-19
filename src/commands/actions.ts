@@ -1,22 +1,23 @@
-import { App } from "@slack/bolt";
-import { Client } from "pg";
-import { updateUserTeamSettings } from "../database/bot_user_info";
-import { markUserAsPresent, getUser, updateUser } from "../lib/users";
-import { TIME_FORMAT_OPTS } from "../lib/utils";
-import { BlockInputTypes } from "../models/blockInputs";
-import { SetTeamActionFormatted, SetTeamActions, SetTeamMultiSoldierSelectAction, SetTeamName } from "../models/setTeam";
-import { VouchActionFormatted, VouchInputs, VouchMultiSoldierSelectAction, RemarksAction } from "../models/vouch";
+import { App } from '@slack/bolt';
+import { Client } from 'pg';
+import { updateUserTeamSettings } from '../database/bot_user_info';
+import { markUserAsPresent, getUser, updateUser } from '../lib/users';
+import { TIME_FORMAT_OPTS } from '../lib/utils';
+import { BlockInputTypes } from '../models/blockInputs';
+import { SetTeamActionFormatted, SetTeamActions, SetTeamMultiSoldierSelectAction, SetTeamName } from '../models/setTeam';
+import { VouchActionFormatted, VouchInputs, VouchMultiSoldierSelectAction, RemarksAction } from '../models/vouch';
 
 export const registerCommandActions = (app: App, db: Client) => {
     app.action('vouch-submit', async (action) => {
         await action.ack();
 
         const stateValues = action.body['state']?.values;
-        let collectedInputs: VouchActionFormatted = {
+        const collectedInputs: VouchActionFormatted = {
             selected_users: [],
             remarks: '',
             vouched_by: action.body.user.id
         };
+        let vouchedForResponseString = '';
 
         for (const value in stateValues) {
             // Yuck
@@ -26,6 +27,7 @@ export const registerCommandActions = (app: App, db: Client) => {
             switch (input[firstKey].type) {
                 case BlockInputTypes.UserSelect:
                     collectedInputs.selected_users = (input[firstKey] as VouchMultiSoldierSelectAction).selected_users;
+                    collectedInputs.selected_users.forEach(user => vouchedForResponseString += `<@${user}> `);
                     break;
 
                 case BlockInputTypes.TextInput:
@@ -34,14 +36,24 @@ export const registerCommandActions = (app: App, db: Client) => {
             }
         }
 
-        handleVouchInputs(collectedInputs);
+        await handleVouchInputs(db, collectedInputs);
+        await action.respond({
+            replace_original: true,
+            text: `
+=====================================================
+<@${action.body.user.id}> HAS VOUCHED FOR:
+
+Soldiers: ${vouchedForResponseString}
+=====================================================
+            `
+        })
     });
 
     app.action('set-team-submit', async (action) => {
         await action.ack();
 
         const stateValues = action.body['state']?.values;
-        let collectedInputs: SetTeamActionFormatted = {
+        const collectedInputs: SetTeamActionFormatted = {
             selected_team_lead: '',
             selected_users: [],
             team_name: ''
@@ -86,9 +98,9 @@ Members: ${selectedUsersString}
     });
 }
 
-export const handleVouchInputs = async (input: VouchActionFormatted) => {
+export const handleVouchInputs = async (db: Client, input: VouchActionFormatted) => {
     for await (const user of input.selected_users) {
-        markUserAsPresent(user, input.remarks, input.vouched_by);
+        markUserAsPresent(db, user, input.remarks, input.vouched_by);
         const vouchedUser = getUser(user);
         console.log(`Vouch Successful: ${vouchedUser?.real_name} at ${new Date().toLocaleTimeString('en-US', TIME_FORMAT_OPTS)}`);
     }

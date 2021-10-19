@@ -8,7 +8,8 @@ export interface SetTeamMultiSoldierSelectAction {
 export enum SetTeamActions {
     TeamLead = 'team-lead-soldier-select',
     TeamMembers = 'team-member-soldier-select',
-    TeamName = 'team-name'
+    TeamName = 'team-name',
+    CheckboxOptions = 'team-checkbox-options'
 }
 
 export interface SetTeamName {
