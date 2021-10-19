@@ -13,8 +13,8 @@ module.exports = {
         // "plugin:node/recommended"
     ],
     rules: {
-        'quotes': ['error', 'single'],
+        'quotes': ['error', 'single', 'backtick'],
         'no-useless-catch': 'off',
-        'no-case-declarations': 'off'
+        'no-case-declarations': 'off',
     }
 };

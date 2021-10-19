@@ -1,10 +1,11 @@
 import { App } from '@slack/bolt';
+import { keyBy } from 'lodash';
 import { Client } from 'pg';
 import { updateUserTeamSettings } from '../database/bot_user_info';
 import { markUserAsPresent, getUser, updateUser } from '../lib/users';
 import { TIME_FORMAT_OPTS } from '../lib/utils';
 import { BlockInputTypes } from '../models/blockInputs';
-import { SetTeamActionFormatted, SetTeamActions, SetTeamMultiSoldierSelectAction, SetTeamName } from '../models/setTeam';
+import { SetTeamActionFormatted, SetTeamActions, SetTeamMultiSoldierSelectAction, SetTeamName, SetTeamOptions, TeamOptions } from '../models/setTeam';
 import { VouchActionFormatted, VouchInputs, VouchMultiSoldierSelectAction, RemarksAction } from '../models/vouch';
 
 export const registerCommandActions = (app: App, db: Client) => {
@@ -56,7 +57,9 @@ Soldiers: ${vouchedForResponseString}
         const collectedInputs: SetTeamActionFormatted = {
             selected_team_lead: '',
             selected_users: [],
-            team_name: ''
+            team_name: '',
+            perstat_required: true,
+            included_in_report: true
         };
         let selectedUsersString = '';
 
@@ -77,6 +80,16 @@ Soldiers: ${vouchedForResponseString}
 
                 case SetTeamActions.TeamName:
                     collectedInputs.team_name = (input[firstKey] as SetTeamName).value;
+                    break;
+
+                case SetTeamActions.CheckboxOptions:
+                    const opts = (input[firstKey] as SetTeamOptions).selected_options;
+                    const optsKeyed = keyBy(opts, 'value') as unknown as TeamOptions;
+
+                    // TODO possibly make more semantically senseible
+                    collectedInputs.perstat_required = !optsKeyed.perstat_required;
+                    collectedInputs.included_in_report = !optsKeyed.included_in_report;
+
                     break;
             }
         }
@@ -108,11 +121,27 @@ export const handleVouchInputs = async (db: Client, input: VouchActionFormatted)
 
 export const handleSetTeamInput = async (input: SetTeamActionFormatted, db: Client) => {
 
-    const updatedUser = await updateUserTeamSettings(db, input.team_name, 'lead', input.selected_team_lead);
-    updateUser(updatedUser);
+    // Set team lead. Make it optional in case they screw up the input or if its a team without a lead identified
+    if (input.selected_team_lead) {
+        const updatedUser = await updateUserTeamSettings(db, {
+            teamName: input.team_name,
+            role: 'lead',
+            userId: input.selected_team_lead,
+            perstat: input.perstat_required,
+            report: input.included_in_report
+        } );
+        updateUser(updatedUser);
+    }
 
+    // Set team members
     for await (const user of input.selected_users) {
-        const updatedUser = await updateUserTeamSettings(db, input.team_name, 'member', user);
+        const updatedUser = await updateUserTeamSettings(db, {
+            teamName: input.team_name,
+            role: 'member',
+            userId: user,
+            perstat: input.perstat_required,
+            report: input.included_in_report
+        });
         updateUser(updatedUser);
     }
 }

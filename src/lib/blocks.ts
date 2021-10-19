@@ -237,6 +237,7 @@ export const commandResponse_helpBlocks: KnownBlock[] = [
             - \`/perstat request [follow on report delay time]\` Trigger a new request. Optionally schedule a new report to run.
             - \`/perstat report\` Trigger a new PERSTAT report rollup.
             - \`/perstat vouch\` Vouch for a person who is unavailable
+            - \`/perstat set-team\` Set a team lead, its members, and wether or not they are reported on the PERSTAT
             `
         }
     },
@@ -328,7 +329,7 @@ export const commandResponse_setTeamBlocks = (requestingUser: BotUser): KnownBlo
 				type: 'multi_users_select',
 				placeholder: {
 					type: 'plain_text',
-					text: 'Selecte One or More Members',
+					text: 'Select One or More Members',
 				},
 				action_id: SetTeamActions.TeamMembers
 			},
@@ -358,15 +359,21 @@ export const commandResponse_setTeamBlocks = (requestingUser: BotUser): KnownBlo
 							type: 'plain_text',
 							text: 'Not required to submit a daily PERSTAT',
 						},
-						value: 'no-perstat'
+						value: 'perstat_required'
+					},
+                    {
+						text: {
+							type: 'plain_text',
+							text: 'Not included in PERSTAT report',
+						},
+						value: 'included_in_report'
 					}
 				],
 				action_id: SetTeamActions.CheckboxOptions
 			},
 			label: {
 				type: 'plain_text',
-				text: 'Label',
-				emoji: true
+				text: 'Options',
 			}
 		},
         {

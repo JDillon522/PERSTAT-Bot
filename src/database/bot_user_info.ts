@@ -32,11 +32,25 @@ export const addSlackUserToDb = async (db: Client, slackId: string): Promise<Bot
     }
 }
 
-export const updateUserTeamSettings = async (db: Client, teamName: string, role: 'lead'|'member', userId: string): Promise<BotUserInfo> => {
+export interface UpdateUserTeamSettingsOpts {
+    teamName: string;
+    role: 'lead'|'member';
+    userId: string;
+    perstat: boolean;
+    report: boolean;
+}
+
+export const updateUserTeamSettings = async (db: Client, opts: UpdateUserTeamSettingsOpts): Promise<BotUserInfo> => {
     try {
         const res = await db.query(
-            'UPDATE public."BOT_USER_INFO" SET assigned_team = $1, team_role = $2 WHERE slack_id = $3 RETURNING *',
-            [teamName, role, userId]
+            `UPDATE public."BOT_USER_INFO"
+                SET assigned_team = $1,
+                team_role = $2,
+                perstat_required = $3,
+                included_in_report = $4
+            WHERE slack_id = $5
+            RETURNING *`,
+            [opts.teamName, opts.role, opts.perstat, opts.report, opts.userId]
         );
         return res.rows[0] as BotUserInfo;
     } catch (err) {

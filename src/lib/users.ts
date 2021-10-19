@@ -5,7 +5,6 @@ import { addSlackUserToDb, getAllUsersFromDb } from '../database/bot_user_info';
 import { setResponse } from '../database/user_responses';
 import { BotUserInfo, NewUserResponse, UserResponse } from '../models/team';
 import { BotUser } from '../models/user';
-import { TIME_FORMAT_OPTS } from './utils';
 
 let _users: BotUser[] = [];
 let _dbUsers: BotUserInfo[] = [];
@@ -67,6 +66,7 @@ export const markUserAsPresent = async (db: Client, userId: string, remarks?: st
             bot_user_info_id: _users[userIndex].data?.id as number
         }
         const newResponse = await setResponse(db, response);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         _users[userIndex].data!.latestResponse = newResponse as UserResponse;
 
     } else {
@@ -75,6 +75,10 @@ export const markUserAsPresent = async (db: Client, userId: string, remarks?: st
 };
 
 export const updateUser = (updatedUser: BotUserInfo): void => {
+    if (!updatedUser) {
+        // In case they accidentally select a bot or some inactivated user
+        return;
+    }
     const index = _users.findIndex(user => user.id === updatedUser.slack_id);
 
     // If for some insane reason we get out of sync and dont have the user
