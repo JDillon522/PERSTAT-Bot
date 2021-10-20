@@ -1,0 +1,3 @@
+DELETE FROM public."USER_RESPONSES"
+	WHERE id > 0;
+	
