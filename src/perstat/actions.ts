@@ -33,8 +33,7 @@ Now go forth and do great things.
 'I give a shit about you' - SFC Boyce
 
 Until further notice, also submit your status on the Google Sheet:
-https://tinyurl.com/186perstat
-=====================================================`
+https://tinyurl.com/186perstat`
 
         });
 
