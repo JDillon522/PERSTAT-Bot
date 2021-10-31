@@ -5,7 +5,7 @@ import { Team, TeamReport } from '../models/team';
 import { BotUser } from '../models/user';
 import { TIME_FORMAT_OPTS } from './utils';
 const env = process.env.ENVIRONMENT !== 'PRODUCTION' ? process.env.ENVIRONMENT : '';
-const initialHeader = `------- 186 CPT - PERSTAT ------- ${env}`
+const initialHeader = `------- C Co. - PERSTAT ------- ${env}`
 
 export const sendPerstatBlocks = [
     {
@@ -51,7 +51,7 @@ export const sendPerstatBlocks = [
     },
 ];
 
-const reminderHeader = `------- 186 CPT - PERSTAT - FINAL REMINDER ------- ${env}`;
+const reminderHeader = `------- C Co. - PERSTAT - FINAL REMINDER ------- ${env}`;
 export const sendReminderBlocks = [
     {
         type: 'header',
@@ -85,7 +85,7 @@ export const sendReminderBlocks = [
     },
 ];
 
-const rollupHeader = `------- 186 CPT - PERSTAT Rollup for ${new Date().toLocaleTimeString('en-US', TIME_FORMAT_OPTS)} ------- ${env}`;
+const rollupHeader = `------- C Co. - PERSTAT Rollup for ${new Date().toLocaleTimeString('en-US', TIME_FORMAT_OPTS)} ------- ${env}`;
 export const reportBlocks = (builtReportBlocks: KnownBlock[]) => {
     builtReportBlocks.unshift({
         type: 'header',
