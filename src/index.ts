@@ -30,15 +30,15 @@ const app = new App({
     // Errors
     setUpErrorHandling(app);
 
-    // Handle interactivity
-    registerPerstatActions(app, db);
-    registerCommands(app, db);
-    registerCommandActions(app, db);
+    // // Handle interactivity
+    // registerPerstatActions(app, db);
+    // registerCommands(app, db);
+    // registerCommandActions(app, db);
 
     // Schedule
     schedulePerstat(app, db);
-    scheduleReminder(app);
-    scheduleReport(app);
+    // scheduleReminder(app);
+    // scheduleReport(app);
 
     await app.start(parseInt(process.env.PORT as string, 10) || 3000);
 

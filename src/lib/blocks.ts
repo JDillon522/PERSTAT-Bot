@@ -19,32 +19,11 @@ export const sendPerstatBlocks = [
         type: 'section',
         text: {
             type: 'mrkdwn',
-            text: 'Good Morning!\n\nIts Time to submit your PERSTAT status.\n'
+            text: `
+=====================================================
+Good Morning! Submit your perstat via Google:
+https://tinyurl.com/186perstat`
         }
-    },
-    {
-        type: 'input',
-        element: {
-            type: 'plain_text_input',
-            action_id: 'perstat-remarks'
-        },
-        label: {
-            type: 'plain_text',
-            text: 'Optional Remarks',
-        }
-    },
-    {
-        type: 'actions',
-        elements: [
-            {
-                type: 'button',
-                text: {
-                    type: 'plain_text',
-                    text: 'I\'m UP!'
-                },
-                action_id: 'send_perstat'
-            }
-        ]
     },
     {
         type: 'divider'

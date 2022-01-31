@@ -6,12 +6,12 @@ import { RemarksAction } from "../models/vouch";
 
 export const registerPerstatActions = (app: App, db: Client) => {
     app.action('send_perstat', async ({ body, ack, respond}) => {
-        await respondToPerstat(db, {body, ack, respond} as SlackActionMiddlewareArgs);
+        // await respondToPerstat(db, {body, ack, respond} as SlackActionMiddlewareArgs);
     });
 
-    app.action('send_perstat_final', async ({ body, ack, respond}) => {
-        await respondToPerstat(db, {body, ack, respond} as SlackActionMiddlewareArgs);
-    });
+    // app.action('send_perstat_final', async ({ body, ack, respond}) => {
+    //     await respondToPerstat(db, {body, ack, respond} as SlackActionMiddlewareArgs);
+    // });
 }
 
 export const respondToPerstat = async (db: Client, {body, ack, respond}: SlackActionMiddlewareArgs) => {
