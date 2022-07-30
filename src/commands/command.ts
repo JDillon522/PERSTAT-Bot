@@ -1,5 +1,5 @@
 import { App } from '@slack/bolt';
-import { commandResponse_reportBlocks, commandResponse_requestBlocks, commandResponse_vouchBlocks, commandResponse_setTeamBlocks, commandResponse_helpBlocks, commandResponse_defaultBlocks, commandResponse_gtfoBlocks } from '../lib/blocks';
+import { commandResponse_reportBlocks, commandResponse_requestBlocks, commandResponse_vouchBlocks, commandResponse_setTeamBlocks, commandResponse_helpBlocks, commandResponse_defaultBlocks, commandResponse_gtfoBlocks_default, commandResponse_gtfoBlocks_single } from '../lib/blocks';
 import { sendReport, sendPerstat } from '../perstat/perstat';
 import { scheduleManualReport } from '../lib/scheduler';
 import { getUser, resetUserResponseStateForNewReport } from '../lib/users';
@@ -81,11 +81,11 @@ export const registerCommands = async (app: App, db: Client) => {
 
     app.command('/gtfo', async({ body, ack, say }) => {
         await ack();
-
+        const args = body.text.split(' ');
         const timerReqBody = {
             "skin_id":1,
             "name":"Countdown to DEMOB!",
-            "time_end":process.env.DEMOB_DATE,
+            "time_end":'',
             "time_zone":"America\/New_York",
             "font_family":"Roboto-Bold",
             "color_primary":"FF3A43",
@@ -111,13 +111,46 @@ export const registerCommands = async (app: App, db: Client) => {
                 'Content-Type': 'application/json'
             },
             data: timerReqBody
-        }
-        const timer = await axios.get(timerUrl, config);
+        };
+        let cpt186Timer;
+        let cpt183Timer;
 
-        await say({
-            channel: body.channel_id,
-            blocks: commandResponse_gtfoBlocks(timer.data.message.src),
-            text: 'Time to GTFO!'
-        });
+        switch (args[0]) {
+            case '186':
+                config.data.time_end = process.env.DEMOB_DATE_186;
+                cpt186Timer = await axios.get(timerUrl, config);
+
+                await say({
+                    channel: body.channel_id,
+                    blocks: commandResponse_gtfoBlocks_single('186', cpt186Timer.data.message.src),
+                    text: 'Time to GTFO!'
+                });
+                break;
+
+            case '183':
+                config.data.time_end = process.env.DEMOB_DATE_183;
+                cpt183Timer = await axios.get(timerUrl, config);
+
+                await say({
+                    channel: body.channel_id,
+                    blocks: commandResponse_gtfoBlocks_single('183', cpt183Timer.data.message.src),
+                    text: 'Time to GTFO!'
+                });
+                break;
+
+            default:
+                config.data.time_end = process.env.DEMOB_DATE_186;
+                cpt186Timer = await axios.get(timerUrl, config);
+
+                config.data.time_end = process.env.DEMOB_DATE_183;
+                cpt183Timer = await axios.get(timerUrl, config);
+
+                await say({
+                    channel: body.channel_id,
+                    blocks: commandResponse_gtfoBlocks_default([cpt186Timer.data.message.src, cpt183Timer.data.message.src]),
+                    text: 'Time to GTFO!'
+                });
+                break;
+        }
     });
 }
