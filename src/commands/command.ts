@@ -115,6 +115,10 @@ export const registerCommands = async (app: App, db: Client) => {
         let cpt186Timer;
         let cpt183Timer;
 
+        console.log(`===== Trying to execute /gtfo command =====
+        186 Date: ${process.env.DEMOB_DATE_186}, 183 Date: ${process.env.DEMOB_DATE_183}
+        ==================================`)
+
         switch (args[0]) {
             case '186':
                 config.data.time_end = process.env.DEMOB_DATE_186;
