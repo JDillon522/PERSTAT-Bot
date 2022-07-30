@@ -433,3 +433,22 @@ export const commandResponse_setTeamBlocks = (requestingUser: BotUser): KnownBlo
         }
     ];
 }
+
+export const commandResponse_gtfoBlocks = (url: string): KnownBlock[] => {
+    return [
+            {
+                "type": "header",
+                "text": {
+                    "type": "plain_text",
+                    "text": "Countdown!",
+                    "emoji": false
+                }
+            },
+            {
+                "type": "image",
+                "image_url": url,
+                "alt_text": "Time to GTFO!"
+            }
+        ]
+
+}

@@ -32,7 +32,7 @@ const app = new App({
 
     // // Handle interactivity
     // registerPerstatActions(app, db);
-    // registerCommands(app, db);
+    registerCommands(app, db);
     // registerCommandActions(app, db);
 
     // Schedule
