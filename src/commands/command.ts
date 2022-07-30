@@ -80,6 +80,8 @@ export const registerCommands = async (app: App, db: Client) => {
     });
 
     app.command('/gtfo', async({ body, ack, say }) => {
+        await ack();
+
         const timerReqBody = {
             "skin_id":1,
             "name":"Countdown to DEMOB!",
